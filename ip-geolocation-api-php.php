@@ -1,8 +1,8 @@
 <?php
 $clientIp = "YOUR_CLIENT_IP";
-$ipkey = "YOUR_API_KEY";
+$apikey = "YOUR_API_KEY";
 
-$response = get_location($ipkey, $clientIp);
+$response = get_location($apikey, $clientIp);
 $resArr = array();
 $resArr = json_decode($response);
 echo "<pre>"; print_r($resArr); echo "</pre>";
