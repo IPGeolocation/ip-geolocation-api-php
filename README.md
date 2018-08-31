@@ -1,5 +1,5 @@
 # IP Geolocation API PHP SDK
-You need a valid IPGeolocation API key to use this SDK. Sign up(https://ipgeolocation.io/signup?plan=1) if you don’t have API key.
+You need a valid IPGeolocation API key to use this SDK. [Sign up](https://ipgeolocation.io/signup) if you don’t have API key.
 
 ## Quick Start Guide
 Call method **get_location($apikey, $clientIp)** passing *API key* and *IP address (optional)* as parameters and it will return IPGeolocation API response.
