@@ -40,7 +40,7 @@ IPGeolocation provides response in the following languages:
   * Chinese Simplified (cn)
   * Spanish (es)
   * Czech (cs)
-  * Italian (it)
+  * Italian (it)  
   Only the paid plan subscriptions can get the response in languages other than English. All the other users will only get the response in English.
 
 * $fields  
