@@ -1,7 +1,7 @@
 <?php
-    $clientIp = "CLIENT_IP_ADDRESS";
-    $apikey = "PUT_YOUR_API_KEY_HERE";
-    $response = get_location($apikey, $clientIp);
+    $apiKey = "PUT_YOUR_API_KEY_HERE";
+    $ip = "CLIENT_IP_ADDRESS";
+    $response = get_location($apiKey, $ip);
     $json = array();
     $json = json_decode($response, true);
     
@@ -9,8 +9,8 @@
     print_r($json);
     echo "</pre>";
 
-    function get_location($apiKey, $ip = null) {
-        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip;
+    function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);

@@ -26,14 +26,34 @@ Internet connection is required to run this component.
 
 ## Basic Usage
 
-Call method **get_location($apikey, $clientIp)** passing *IP address (optional)* and *API key* as parameters and it will return IP Geolocation API response.
-Note: If you want IP to geolocation for the machine calling IPGeolocation API, leave out the *IP address* parameter.
+Call method **get_geolocation($apiKey, $ip, $lang, $fields, $excludes)** passing _API key_ and _IP address_ as parameters (rest of the parameters are optional) and it will return the Geolocation for the passed IP address.
+To customize the geolocation response, you can pass the other parameters to **get_geolocation** method as described below:
+
+* $lang  
+Pass the _language_ parameter to get the geolocation information in a language other than English. By default, it is set to English language.  
+IPGeolocation provides response in the following languages:
+  * English (en)
+  * German (de)
+  * Russian (ru)
+  * Japanese (ja)
+  * French (fr)
+  * Chinese Simplified (cn)
+  * Spanish (es)
+  * Czech (cs)
+  * Italian (it)
+  Only the paid plan subscriptions can get the response in languages other than English. All the other users will only get the response in English.
+
+* $fields  
+Pass the _fields_ parameter to get the specified fields only. By default, it is set to get all the fields in the response.
+
+* $excludes
+Pass the _exlcludes_ parameter to get remove the unnecessary fields from the response. By default, it set to not to exclude any fields.
 
 ```php
 <?php
-    $clientIp = null;
-    $apikey = "PUT_YOUR_API_KEY_HERE";
-    $response = get_location($apikey, $clientIp);
+    $apiKey = "PUT_YOUR_API_KEY_HERE";
+    $ip = "CLIENT_IP_ADDRESS";
+    $response = get_location($apiKey, $ip);
     $json = array();
     $json = json_decode($response, true);
     
@@ -41,8 +61,8 @@ Note: If you want IP to geolocation for the machine calling IPGeolocation API, l
     print_r($json);
     echo "</pre>";
 
-    function get_location($apiKey, $ip = null) {
-        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip;
+    function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);
@@ -74,8 +94,8 @@ Here is an example to get the geolocation for a list of IP addresses and display
 </style>
 
 <?php
+    $apiKey = "PUT_YOUR_API_KEY_HERE";
     $ips = array("3.3.3.3", "4.4.4.4", "5.5.5.5", "6.6.6.6", "7.7.7.7");
-    $apikey = "PUT_YOUR_API_KEY_HERE";
 
     echo "<table>";
     echo "<tr>";
@@ -85,11 +105,11 @@ Here is an example to get the geolocation for a list of IP addresses and display
     echo "<th>Organization</th>";
     echo "<th>ISP</th>";
     echo "<th>Languages</th>";
-    echo "<th>Is EU?</th>";
+    echo "<th>Is EU Member?</th>";
     echo "</tr>";
 
     foreach($ips as $ip) {
-        $location = get_location($apikey, $ip);
+        $location = get_geolocation($apiKey, $ip);
         $decodedLocation = json_decode($location);
 
         echo "<tr>";
@@ -108,8 +128,8 @@ Here is an example to get the geolocation for a list of IP addresses and display
     }
     echo "</table>";
 
-    function get_location($apiKey, $ip = null) {
-        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip;
+    function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);
