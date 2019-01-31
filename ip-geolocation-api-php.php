@@ -1,12 +1,11 @@
 <?php
     $apiKey = "PUT_YOUR_API_KEY_HERE";
     $ip = "CLIENT_IP_ADDRESS";
-    $response = get_location($apiKey, $ip);
-    $json = array();
-    $json = json_decode($response, true);
+    $location = get_geolocation($apiKey, $ip);
+    $decodedLocation = json_decode($location, true);
     
     echo "<pre>";
-    print_r($json);
+    print_r($decodedLocation);
     echo "</pre>";
 
     function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
