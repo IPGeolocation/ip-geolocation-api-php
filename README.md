@@ -53,12 +53,11 @@ Pass the _exlcludes_ parameter to get remove the unnecessary fields from the res
 <?php
     $apiKey = "PUT_YOUR_API_KEY_HERE";
     $ip = "CLIENT_IP_ADDRESS";
-    $response = get_location($apiKey, $ip);
-    $json = array();
-    $json = json_decode($response, true);
+    $location = get_geolocation($apiKey, $ip);
+    $decodedLocation = json_decode($location, true);
     
     echo "<pre>";
-    print_r($json);
+    print_r($decodedLocation);
     echo "</pre>";
 
     function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
@@ -106,24 +105,28 @@ Here is an example to get the geolocation for a list of IP addresses and display
     echo "<th>ISP</th>";
     echo "<th>Languages</th>";
     echo "<th>Is EU Member?</th>";
+    echo "<th>Currency</th>";
+    echo "<th>Timezone</th>";
     echo "</tr>";
 
-    foreach($ips as $ip) {
+    foreach ($ips as $ip) {
         $location = get_geolocation($apiKey, $ip);
-        $decodedLocation = json_decode($location);
+        $decodedLocation = json_decode($location, true);
 
         echo "<tr>";
-        echo "<td>$decodedLocation->ip</td>";
-        echo "<td>$decodedLocation->continent_name ($decodedLocation->continent_code)</td>";
-        echo "<td>$decodedLocation->country_name ($decodedLocation->country_code2)</td>";
-        echo "<td>$decodedLocation->organization</td>";
-        echo "<td>$decodedLocation->isp</td>";
-        echo "<td>$decodedLocation->languages</td>";
-        if($decodedLocation->is_eu == true) {
+        echo "<td>".$decodedLocation['ip']."</td>";
+        echo "<td>".$decodedLocation['continent_name']." (".$decodedLocation['continent_code'].")</td>";
+        echo "<td>".$decodedLocation['country_name']." (".$decodedLocation['country_code2'].")</td>";
+        echo "<td>".$decodedLocation['organization']."</td>";
+        echo "<td>".$decodedLocation['isp']."</td>";
+        echo "<td>".$decodedLocation['languages']."</td>";
+        if($decodedLocation['is_eu'] == true) {
             echo "<td>Yes</td>";
         } else {
             echo "<td>No</td>";
         }
+        echo "<td>".$decodedLocation['currency']['name']."</td>";
+        echo "<td>".$decodedLocation['time_zone']['name']."</td>";
         echo "</tr>";
     }
     echo "</table>";
