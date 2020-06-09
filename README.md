@@ -71,6 +71,7 @@ Pass the _exlcludes_ parameter to get remove the unnecessary fields from the res
             'Content-Type: application/json',
             'Accept: application/json'
         ));
+        
         return curl_exec($cURL);
     }
 ?>
@@ -135,7 +136,7 @@ Here is an example to get the geolocation for a list of IP addresses and display
             echo "<td>".$decodedLocation['currency']['name']."</td>";
             echo "<td>".$decodedLocation['time_zone']['name']."</td>";
         }
-        
+
         echo "</tr>";
     }
 
@@ -152,6 +153,7 @@ Here is an example to get the geolocation for a list of IP addresses and display
             'Content-Type: application/json',
             'Accept: application/json'
         ));
+
         return curl_exec($cURL);
     }
 ?>
