@@ -135,9 +135,10 @@ Here is an example to get the geolocation for a list of IP addresses and display
             echo "<td>".$decodedLocation['currency']['name']."</td>";
             echo "<td>".$decodedLocation['time_zone']['name']."</td>";
         }
+        
         echo "</tr>";
     }
-    
+
     echo "</table>";
 
     function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
