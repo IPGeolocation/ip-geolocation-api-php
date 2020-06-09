@@ -114,21 +114,30 @@ Here is an example to get the geolocation for a list of IP addresses and display
         $decodedLocation = json_decode($location, true);
 
         echo "<tr>";
-        echo "<td>".$decodedLocation['ip']."</td>";
-        echo "<td>".$decodedLocation['continent_name']." (".$decodedLocation['continent_code'].")</td>";
-        echo "<td>".$decodedLocation['country_name']." (".$decodedLocation['country_code2'].")</td>";
-        echo "<td>".$decodedLocation['organization']."</td>";
-        echo "<td>".$decodedLocation['isp']."</td>";
-        echo "<td>".$decodedLocation['languages']."</td>";
-        if($decodedLocation['is_eu'] == true) {
-            echo "<td>Yes</td>";
+
+        if ($decodedLocation['message'] != '') {
+            echo "<td>".$ip."</td>";
+            echo "<td>".$decodedLocation['message']."</td>";
         } else {
-            echo "<td>No</td>";
+            echo "<td>".$decodedLocation['ip']."</td>";
+            echo "<td>".$decodedLocation['continent_name']." (".$decodedLocation['continent_code'].")</td>";
+            echo "<td>".$decodedLocation['country_name']." (".$decodedLocation['country_code2'].")</td>";
+            echo "<td>".$decodedLocation['organization']."</td>";
+            echo "<td>".$decodedLocation['isp']."</td>";
+            echo "<td>".$decodedLocation['languages']."</td>";
+
+            if ($decodedLocation['is_eu'] == true) {
+                echo "<td>Yes</td>";
+            } else {
+                echo "<td>No</td>";
+            }
+            
+            echo "<td>".$decodedLocation['currency']['name']."</td>";
+            echo "<td>".$decodedLocation['time_zone']['name']."</td>";
         }
-        echo "<td>".$decodedLocation['currency']['name']."</td>";
-        echo "<td>".$decodedLocation['time_zone']['name']."</td>";
         echo "</tr>";
     }
+    
     echo "</table>";
 
     function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
