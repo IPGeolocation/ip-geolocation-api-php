@@ -24,6 +24,11 @@ You need a valid 'IPGeolocation API key' to use this SDK. [Sign up](https://ipge
 
 Internet connection is required to run this component.
 
+## Documentation
+Use the following URL to visit documentation
+[https://ipgeolocation.io/documentation.html](https://ipgeolocation.io/documentation.html)
+
+
 ## Basic Usage
 
 Call method **get_geolocation($apiKey, $ip, $lang, $fields, $excludes)** passing _API key_ and _IP address_ as parameters (rest of the parameters are optional) and it will return the Geolocation for the passed IP address.
