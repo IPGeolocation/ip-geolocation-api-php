@@ -3,9 +3,11 @@
     $ip = "CLIENT_IP_ADDRESS";
     $location = get_geolocation($apiKey, $ip, "en", "*", "", $include);
     $decodedLocation = json_decode($location, true);
+    
     echo "<pre>";
     print_r($decodedLocation);
     echo "</pre>";
+    
     function get_geolocation($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "", $include = "") {
         $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes."&include=".$include;
         $cURL = curl_init();
@@ -16,6 +18,7 @@
             'Content-Type: application/json',
             'Accept: application/json'
         ));
+        
         return curl_exec($cURL);
     }
 ?>
