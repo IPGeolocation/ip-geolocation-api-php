@@ -1,20 +1,15 @@
-vendor/
-node_modules/
-npm-debug.log
+# ref: https://github.com/github/gitignore/blob/master/Composer.gitignore
 
-# Laravel 4 specific
-bootstrap/compiled.php
-app/storage/
+composer.phar
+/vendor/
 
-# Laravel 5 & Lumen specific
-public/storage
-public/hot
-storage/*.key
-.env.*.php
-.env.php
-.env
-Homestead.yaml
-Homestead.json
+# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
+# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
+# composer.lock
 
-# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
-.rocketeer/
+# php-cs-fixer cache
+.php_cs.cache
+.php-cs-fixer.cache
+
+# PHPUnit cache
+.phpunit.result.cache
