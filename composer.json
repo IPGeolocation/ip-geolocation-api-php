@@ -1,5 +1,5 @@
 {
-    "name": "ipgeolocation/sdk-php",
+    "name": "ipgeolocation/ipgeolocation-php-sdk",
     "description": "Ipgeolocation provides a set of APIs to make ip based decisions.",
     "keywords": [
         "ipgeolocation",
