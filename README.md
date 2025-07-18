@@ -125,7 +125,7 @@ The `ip` parameter in the SDK can accept any valid IPv4 address, IPv6 address, o
 
 ---
 
-## Basic Plan Examples
+## Developer (Free) Plan Examples
 
 ### Default Fields
 
