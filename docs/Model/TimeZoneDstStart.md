@@ -11,4 +11,4 @@ Name | Type | Description | Notes
 **date_time_before** | **string** |  | [optional]
 **overlap** | **bool** |  | [optional]
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#api-endpoints) [[Back to README]](../../README.md)

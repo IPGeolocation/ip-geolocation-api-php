@@ -42,6 +42,6 @@ The Astronomy API provides the location-based rise and set times for the Sun and
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)

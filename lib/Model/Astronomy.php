@@ -47,16 +47,22 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $ipgeoapiTypes = [
-        'date' => '\DateTime',
+        'date' => 'string',
         'current_time' => 'string',
+        'mid_night' => 'string',
+        'night_end' => 'string',
+        'morning' => '\Ipgeolocation\Sdk\Model\AstronomyMorning',
         'sunrise' => 'string',
         'sunset' => 'string',
+        'evening' => '\Ipgeolocation\Sdk\Model\AstronomyEvening',
+        'night_begin' => 'string',
         'sun_status' => 'string',
         'solar_noon' => 'string',
         'day_length' => 'string',
         'sun_altitude' => 'float',
         'sun_distance' => 'float',
         'sun_azimuth' => 'float',
+        'moon_phase' => 'string',
         'moonrise' => 'string',
         'moonset' => 'string',
         'moon_status' => 'string',
@@ -64,7 +70,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => 'float',
         'moon_azimuth' => 'float',
         'moon_parallactic_angle' => 'float',
-        'moon_phase' => 'string',
         'moon_illumination_percentage' => 'string',
         'moon_angle' => 'float'
     ];
@@ -77,16 +82,22 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
       * @psalm-var array<string, string|null>
       */
     protected static $ipgeoapiFormats = [
-        'date' => 'date',
-        'current_time' => 'time',
+        'date' => null,
+        'current_time' => null,
+        'mid_night' => null,
+        'night_end' => null,
+        'morning' => null,
         'sunrise' => null,
         'sunset' => null,
+        'evening' => null,
+        'night_begin' => null,
         'sun_status' => null,
         'solar_noon' => null,
         'day_length' => null,
         'sun_altitude' => null,
         'sun_distance' => null,
         'sun_azimuth' => null,
+        'moon_phase' => null,
         'moonrise' => null,
         'moonset' => null,
         'moon_status' => null,
@@ -94,7 +105,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => null,
         'moon_azimuth' => null,
         'moon_parallactic_angle' => null,
-        'moon_phase' => null,
         'moon_illumination_percentage' => null,
         'moon_angle' => null
     ];
@@ -107,14 +117,20 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static array $ipgeoapiNullables = [
         'date' => false,
         'current_time' => false,
+        'mid_night' => false,
+        'night_end' => false,
+        'morning' => false,
         'sunrise' => false,
         'sunset' => false,
+        'evening' => false,
+        'night_begin' => false,
         'sun_status' => false,
         'solar_noon' => false,
         'day_length' => false,
         'sun_altitude' => false,
         'sun_distance' => false,
         'sun_azimuth' => false,
+        'moon_phase' => false,
         'moonrise' => false,
         'moonset' => false,
         'moon_status' => false,
@@ -122,7 +138,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => false,
         'moon_azimuth' => false,
         'moon_parallactic_angle' => false,
-        'moon_phase' => false,
         'moon_illumination_percentage' => false,
         'moon_angle' => false
     ];
@@ -215,14 +230,20 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $attributeMap = [
         'date' => 'date',
         'current_time' => 'current_time',
+        'mid_night' => 'mid_night',
+        'night_end' => 'night_end',
+        'morning' => 'morning',
         'sunrise' => 'sunrise',
         'sunset' => 'sunset',
+        'evening' => 'evening',
+        'night_begin' => 'night_begin',
         'sun_status' => 'sun_status',
         'solar_noon' => 'solar_noon',
         'day_length' => 'day_length',
         'sun_altitude' => 'sun_altitude',
         'sun_distance' => 'sun_distance',
         'sun_azimuth' => 'sun_azimuth',
+        'moon_phase' => 'moon_phase',
         'moonrise' => 'moonrise',
         'moonset' => 'moonset',
         'moon_status' => 'moon_status',
@@ -230,7 +251,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => 'moon_distance',
         'moon_azimuth' => 'moon_azimuth',
         'moon_parallactic_angle' => 'moon_parallactic_angle',
-        'moon_phase' => 'moon_phase',
         'moon_illumination_percentage' => 'moon_illumination_percentage',
         'moon_angle' => 'moon_angle'
     ];
@@ -243,14 +263,20 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $setters = [
         'date' => 'setDate',
         'current_time' => 'setCurrentTime',
+        'mid_night' => 'setMidNight',
+        'night_end' => 'setNightEnd',
+        'morning' => 'setMorning',
         'sunrise' => 'setSunrise',
         'sunset' => 'setSunset',
+        'evening' => 'setEvening',
+        'night_begin' => 'setNightBegin',
         'sun_status' => 'setSunStatus',
         'solar_noon' => 'setSolarNoon',
         'day_length' => 'setDayLength',
         'sun_altitude' => 'setSunAltitude',
         'sun_distance' => 'setSunDistance',
         'sun_azimuth' => 'setSunAzimuth',
+        'moon_phase' => 'setMoonPhase',
         'moonrise' => 'setMoonrise',
         'moonset' => 'setMoonset',
         'moon_status' => 'setMoonStatus',
@@ -258,7 +284,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => 'setMoonDistance',
         'moon_azimuth' => 'setMoonAzimuth',
         'moon_parallactic_angle' => 'setMoonParallacticAngle',
-        'moon_phase' => 'setMoonPhase',
         'moon_illumination_percentage' => 'setMoonIlluminationPercentage',
         'moon_angle' => 'setMoonAngle'
     ];
@@ -271,14 +296,20 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $getters = [
         'date' => 'getDate',
         'current_time' => 'getCurrentTime',
+        'mid_night' => 'getMidNight',
+        'night_end' => 'getNightEnd',
+        'morning' => 'getMorning',
         'sunrise' => 'getSunrise',
         'sunset' => 'getSunset',
+        'evening' => 'getEvening',
+        'night_begin' => 'getNightBegin',
         'sun_status' => 'getSunStatus',
         'solar_noon' => 'getSolarNoon',
         'day_length' => 'getDayLength',
         'sun_altitude' => 'getSunAltitude',
         'sun_distance' => 'getSunDistance',
         'sun_azimuth' => 'getSunAzimuth',
+        'moon_phase' => 'getMoonPhase',
         'moonrise' => 'getMoonrise',
         'moonset' => 'getMoonset',
         'moon_status' => 'getMoonStatus',
@@ -286,7 +317,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         'moon_distance' => 'getMoonDistance',
         'moon_azimuth' => 'getMoonAzimuth',
         'moon_parallactic_angle' => 'getMoonParallacticAngle',
-        'moon_phase' => 'getMoonPhase',
         'moon_illumination_percentage' => 'getMoonIlluminationPercentage',
         'moon_angle' => 'getMoonAngle'
     ];
@@ -350,14 +380,20 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $this->setIfExists('date', $data ?? [], null);
         $this->setIfExists('current_time', $data ?? [], null);
+        $this->setIfExists('mid_night', $data ?? [], null);
+        $this->setIfExists('night_end', $data ?? [], null);
+        $this->setIfExists('morning', $data ?? [], null);
         $this->setIfExists('sunrise', $data ?? [], null);
         $this->setIfExists('sunset', $data ?? [], null);
+        $this->setIfExists('evening', $data ?? [], null);
+        $this->setIfExists('night_begin', $data ?? [], null);
         $this->setIfExists('sun_status', $data ?? [], null);
         $this->setIfExists('solar_noon', $data ?? [], null);
         $this->setIfExists('day_length', $data ?? [], null);
         $this->setIfExists('sun_altitude', $data ?? [], null);
         $this->setIfExists('sun_distance', $data ?? [], null);
         $this->setIfExists('sun_azimuth', $data ?? [], null);
+        $this->setIfExists('moon_phase', $data ?? [], null);
         $this->setIfExists('moonrise', $data ?? [], null);
         $this->setIfExists('moonset', $data ?? [], null);
         $this->setIfExists('moon_status', $data ?? [], null);
@@ -365,7 +401,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('moon_distance', $data ?? [], null);
         $this->setIfExists('moon_azimuth', $data ?? [], null);
         $this->setIfExists('moon_parallactic_angle', $data ?? [], null);
-        $this->setIfExists('moon_phase', $data ?? [], null);
         $this->setIfExists('moon_illumination_percentage', $data ?? [], null);
         $this->setIfExists('moon_angle', $data ?? [], null);
     }
@@ -415,7 +450,7 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets date
      *
-     * @return \DateTime|null
+     * @return string|null
      */
     public function getDate()
     {
@@ -425,7 +460,7 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets date
      *
-     * @param \DateTime|null $date date
+     * @param string|null $date date
      *
      * @return self
      */
@@ -462,6 +497,87 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable current_time cannot be null');
         }
         $this->container['current_time'] = $current_time;
+
+        return $this;
+    }
+
+    /**
+     * Gets mid_night
+     *
+     * @return string|null
+     */
+    public function getMidNight()
+    {
+        return $this->container['mid_night'];
+    }
+
+    /**
+     * Sets mid_night
+     *
+     * @param string|null $mid_night mid_night
+     *
+     * @return self
+     */
+    public function setMidNight($mid_night)
+    {
+        if (is_null($mid_night)) {
+            throw new \InvalidArgumentException('non-nullable mid_night cannot be null');
+        }
+        $this->container['mid_night'] = $mid_night;
+
+        return $this;
+    }
+
+    /**
+     * Gets night_end
+     *
+     * @return string|null
+     */
+    public function getNightEnd()
+    {
+        return $this->container['night_end'];
+    }
+
+    /**
+     * Sets night_end
+     *
+     * @param string|null $night_end night_end
+     *
+     * @return self
+     */
+    public function setNightEnd($night_end)
+    {
+        if (is_null($night_end)) {
+            throw new \InvalidArgumentException('non-nullable night_end cannot be null');
+        }
+        $this->container['night_end'] = $night_end;
+
+        return $this;
+    }
+
+    /**
+     * Gets morning
+     *
+     * @return \Ipgeolocation\Sdk\Model\AstronomyMorning|null
+     */
+    public function getMorning()
+    {
+        return $this->container['morning'];
+    }
+
+    /**
+     * Sets morning
+     *
+     * @param \Ipgeolocation\Sdk\Model\AstronomyMorning|null $morning morning
+     *
+     * @return self
+     */
+    public function setMorning($morning)
+    {
+        if (is_null($morning)) {
+            throw new \InvalidArgumentException('non-nullable morning cannot be null');
+        }
+        $this->container['morning'] = $morning;
 
         return $this;
     }
@@ -516,6 +632,60 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable sunset cannot be null');
         }
         $this->container['sunset'] = $sunset;
+
+        return $this;
+    }
+
+    /**
+     * Gets evening
+     *
+     * @return \Ipgeolocation\Sdk\Model\AstronomyEvening|null
+     */
+    public function getEvening()
+    {
+        return $this->container['evening'];
+    }
+
+    /**
+     * Sets evening
+     *
+     * @param \Ipgeolocation\Sdk\Model\AstronomyEvening|null $evening evening
+     *
+     * @return self
+     */
+    public function setEvening($evening)
+    {
+        if (is_null($evening)) {
+            throw new \InvalidArgumentException('non-nullable evening cannot be null');
+        }
+        $this->container['evening'] = $evening;
+
+        return $this;
+    }
+
+    /**
+     * Gets night_begin
+     *
+     * @return string|null
+     */
+    public function getNightBegin()
+    {
+        return $this->container['night_begin'];
+    }
+
+    /**
+     * Sets night_begin
+     *
+     * @param string|null $night_begin night_begin
+     *
+     * @return self
+     */
+    public function setNightBegin($night_begin)
+    {
+        if (is_null($night_begin)) {
+            throw new \InvalidArgumentException('non-nullable night_begin cannot be null');
+        }
+        $this->container['night_begin'] = $night_begin;
 
         return $this;
     }
@@ -678,6 +848,33 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable sun_azimuth cannot be null');
         }
         $this->container['sun_azimuth'] = $sun_azimuth;
+
+        return $this;
+    }
+
+    /**
+     * Gets moon_phase
+     *
+     * @return string|null
+     */
+    public function getMoonPhase()
+    {
+        return $this->container['moon_phase'];
+    }
+
+    /**
+     * Sets moon_phase
+     *
+     * @param string|null $moon_phase moon_phase
+     *
+     * @return self
+     */
+    public function setMoonPhase($moon_phase)
+    {
+        if (is_null($moon_phase)) {
+            throw new \InvalidArgumentException('non-nullable moon_phase cannot be null');
+        }
+        $this->container['moon_phase'] = $moon_phase;
 
         return $this;
     }
@@ -867,33 +1064,6 @@ class Astronomy implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable moon_parallactic_angle cannot be null');
         }
         $this->container['moon_parallactic_angle'] = $moon_parallactic_angle;
-
-        return $this;
-    }
-
-    /**
-     * Gets moon_phase
-     *
-     * @return string|null
-     */
-    public function getMoonPhase()
-    {
-        return $this->container['moon_phase'];
-    }
-
-    /**
-     * Sets moon_phase
-     *
-     * @param string|null $moon_phase moon_phase
-     *
-     * @return self
-     */
-    public function setMoonPhase($moon_phase)
-    {
-        if (is_null($moon_phase)) {
-            throw new \InvalidArgumentException('non-nullable moon_phase cannot be null');
-        }
-        $this->container['moon_phase'] = $moon_phase;
 
         return $this;
     }
