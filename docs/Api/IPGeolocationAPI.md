@@ -43,7 +43,7 @@ This feature is available only on our paid API subscriptions (STANDARD or ADVANC
 - **Content-Type**: `application/json`
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
@@ -83,6 +83,6 @@ IP Geolocation API provides real-time and accurate geolocation, network, abuse, 
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)

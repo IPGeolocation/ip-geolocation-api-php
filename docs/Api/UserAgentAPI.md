@@ -39,7 +39,7 @@ User Agent Parser API provides the accurate browser, device, and operating syste
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
@@ -73,7 +73,7 @@ This endpoint allows you to perform the parsing of multiple User-Angent strings 
 - **Content-Type**: `application/json`
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
@@ -106,6 +106,6 @@ You can also provide custom User-Agent string to parse in JSON payload. This end
 - **Content-Type**: `application/json`
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)

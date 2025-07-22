@@ -42,7 +42,7 @@ The Bulk IP Security Lookup API can provide security details for up to `50,000` 
 - **Content-Type**: `application/json`
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
@@ -80,6 +80,6 @@ IP Security API provides security details of a given IP. It detects whether the 
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)

@@ -1,4 +1,4 @@
-# # TimezoneLocation
+# # AstronomyLocation
 
 ## Properties
 
@@ -20,5 +20,6 @@ Name | Type | Description | Notes
 **zipcode** | **string** |  | [optional]
 **latitude** | **string** |  | [optional]
 **longitude** | **string** |  | [optional]
+**elevation** | **string** |  | [optional]
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#api-endpoints) [[Back to README]](../../README.md)

@@ -40,6 +40,6 @@ ASN API provides comprehensive details for an ASN including the as name,  organi
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/xml`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to top]](#) [[Back to API list]](../../README.md#api-endpoints)
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)

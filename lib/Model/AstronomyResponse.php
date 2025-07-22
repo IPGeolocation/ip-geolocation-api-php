@@ -48,8 +48,8 @@ class AstronomyResponse implements ModelInterface, ArrayAccess, \JsonSerializabl
       */
     protected static $ipgeoapiTypes = [
         'ip' => 'string',
-        'location' => '\Ipgeolocation\Sdk\\Model\TimezoneLocation',
-        'astronomy' => '\Ipgeolocation\Sdk\\Model\Astronomy'
+        'location' => '\Ipgeolocation\Sdk\Model\AstronomyLocation',
+        'astronomy' => '\Ipgeolocation\Sdk\Model\Astronomy'
     ];
 
     /**
@@ -323,7 +323,7 @@ class AstronomyResponse implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets location
      *
-     * @return \Ipgeolocation\Sdk\\Model\TimezoneLocation|null
+     * @return \Ipgeolocation\Sdk\Model\AstronomyLocation|null
      */
     public function getLocation()
     {
@@ -333,7 +333,7 @@ class AstronomyResponse implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets location
      *
-     * @param \Ipgeolocation\Sdk\\Model\TimezoneLocation|null $location location
+     * @param \Ipgeolocation\Sdk\Model\AstronomyLocation|null $location location
      *
      * @return self
      */
@@ -350,7 +350,7 @@ class AstronomyResponse implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets astronomy
      *
-     * @return \Ipgeolocation\Sdk\\Model\Astronomy|null
+     * @return \Ipgeolocation\Sdk\Model\Astronomy|null
      */
     public function getAstronomy()
     {
@@ -360,7 +360,7 @@ class AstronomyResponse implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets astronomy
      *
-     * @param \Ipgeolocation\Sdk\\Model\Astronomy|null $astronomy astronomy
+     * @param \Ipgeolocation\Sdk\Model\Astronomy|null $astronomy astronomy
      *
      * @return self
      */

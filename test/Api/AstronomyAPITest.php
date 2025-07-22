@@ -62,19 +62,19 @@ class AstronomyAPITest extends TestCase
     {
         $client = new \GuzzleHttp\Client();
         $config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-            ->setApiKey('apiKey', 'API_KEY');
+            ->setApiKey('apiKey', '481060d9cb8a4813a40f2720caa8de74');
 
         $apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI($client, $config);
 
         try {
             $response = $apiInstance->getAstronomyDetails(
-                null,          // ip
+                '1.1.1.1',     // ip
                 null,          // location
                 null,          // lat
                 null,          // long
                 null,          // date
                 null,          // output
-                null           // lang
+                'fr'           // lang
             );
             echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } catch (\Exception $e) {

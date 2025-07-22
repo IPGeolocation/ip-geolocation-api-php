@@ -14,4 +14,4 @@ Name | Type | Description | Notes
 **country_metadata** | [**\Ipgeolocation\Sdk\\Model\CountryMetadata**](CountryMetadata.md) |  | [optional]
 **currency** | [**\Ipgeolocation\Sdk\\Model\Currency**](Currency.md) |  | [optional]
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#api-endpoints) [[Back to README]](../../README.md)
