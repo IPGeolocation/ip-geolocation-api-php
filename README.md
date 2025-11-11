@@ -713,13 +713,13 @@ try {
 }
 ```
 
-### IP Security Examples
+## IP Security Examples
 
 This section shows how to use the `getIpSecurityInfo()` method with various subscription tiers. Each example demonstrates how to query threat intelligence and risk metadata using parameters like `fields`, `excludes`, and `include`.
 
 For the full API specs, refer to [IP Security API Documentation](https://ipgeolocation.io/ip-security-api.html#documentation-overview).
 
-#### Get Default Fields
+### Get Default Fields
 
 ```php
 $apiInstance = new \Ipgeolocation\Sdk\Api\IPSecurityAPI(
