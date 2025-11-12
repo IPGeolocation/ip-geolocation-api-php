@@ -1,33 +1,82 @@
 # IP Geolocation API PHP SDK
 
-IPGeolocation provides a set of APIs to make IP-based decisions and enrich your applications with real-time geolocation, timezone, user-agent, and threat intelligence data.
+## Overview
+The official **PHP Client Library/SDK** for **[IPGeolocation.io](https://ipgeolocation.io)**'s set of APIs, provides a quick, developer friendly, way to access IP Location, threat intelligence, Timezone, Astronomy, ASN, Abuse Contact, and user-agent data. Lookup your own IP or provide any IPv4, IPv6 or domain name to get structured results in PHP, without the need for manual HTTP handling.
 
-**API version**: 2.0
+- [IP Location API](https://ipgeolocation.io/ip-location-api.html): Get all-in-one unified solution for **location** (city, locality, state, country, etc.), **currency**, **network** (AS number, ASN name, organization, asn type, date of allocation, company/ISP name, company type, company domain), **timezone** , **useragent** string parsing, **security** (threat score, is_tor, is_bot, proxy_provider, cloud_provider), and **abuse contact** (route/CIDR network, country, address, email, phone numbers) information.
+- [IP Security API](https://ipgeolocation.io/ip-security-api.html): Get security, network, location, hostname, timezone and useragent parsing.
+- [ASN API](https://ipgeolocation.io/asn-api.html): Get ASN details along with peers, upstreams, downstreams, routes, and raw WHOIS.
+- [Abuse Contact API](https://ipgeolocation.io/ip-abuse-contact-api.html): Get abuse emails, phone numbers, kind, organization, route/CIDR network and country.
+- [Astronomy API](https://ipgeolocation.io/astronomy-api.html): Get sunrise, sunset, moonrise, moonset, moon phases with precise twilight period times in combination with location information.
+- [Timezone API](https://ipgeolocation.io/timezone-api.html): Get timezone name, multiple time formats, daylight saving status and its details along with location information.
+- [Timezone Convert API](https://ipgeolocation.io/timezone-api.html): Convert time between timezone names, geo coordinates, location addresses, IATA codes, ICAO codes, or UN/LOCODE.
+- [User Agent API](https://ipgeolocation.io/user-agent-api.html): Get browser, Operating System, and device info from single or multiple Useragent string parsing.
+
+This library aims to empower developers to integrate threat intelligence, personalization, fraud prevention, compliance, and analytics features directly into PHP based applications. Whether you're enriching signup forms with ip geolocation data, localizing content, embedding threat intelligence in back-end systems, or converting time zones and currencies, the library ensures seamless, scalable integration with IPGeolocation.io's global API infrastructure.
+
+Based on:
+- API version: 2.0.0
+
+**Official Release:**
+- Available on [**Packagist**](https://packagist.org/packages/ipgeolocation/ipgeolocation-php-sdk)
+- Source Code: [**GitHub Repository**](https://github.com/IPGeolocation/ip-geolocation-api-php)
 
 ## Table of Contents
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+   - [Using Composer](#using-composer)
+   - [Manual Installation](#manual-installation)
+3. [API Plan Tiers and Documentation](#api-plan-tiers-and-documentation)
+4. [API Endpoints](#api-endpoints)
+5. [Fields and Methods Availability](#fields-and-methods-availability)
+6. [Authentication Setup](#authentication-setup)
+   - [How to Get Your API Key](#how-to-get-your-api-key)
+   - [ApiKeyAuth](#apikeyauth)
+7. [IP Geolocation Examples](#ip-geolocation-examples)
+   - [Developer (Free) Plan Examples](#developer-free-plan-examples)
+   - [Standard Plan Examples](#standard-plan-examples)
+   - [Advanced Plan Examples](#advanced-plan-examples)
+   - [Bulk IP Geolocation Examples](#bulk-ip-geolocation-example)
+8. [IP Security Examples](#ip-security-examples)
+   - [Get Default Fields](#get-default-fields-2)
+   - [Include Multiple Optional Fields](#include-multiple-optional-fields)
+   - [Request with Field Filtering](#request-with-field-filtering)
+   - [Bulk IP Security Lookup](#bulk-ip-security-lookup)
+9. [ASN API Examples](#asn-api-examples)
+   - [Get ASN Information by IP Address](#get-asn-information-by-ip-address)
+   - [Get ASN Information by ASN Number](#get-asn-information-by-asn-number)
+   - [Combine All objects using Include](#combine-all-objects-using-include)
+10. [Abuse Contact API Examples](#abuse-contact-api-examples)
+    - [Lookup Abuse Contact by IP](#lookup-abuse-contact-by-ip)
+    - [Lookup Abuse Contact with Specific Fields](#lookup-abuse-contact-with-specific-fields)
+    - [Lookup Abuse Contact while Excluding Fields](#lookup-abuse-contact-while-excluding-fields)
+11. [Timezone API Examples](#timezone-api-examples)
+    - [Get Timezone by IP Address](#get-timezone-by-ip-address)
+    - [Get Timezone by Timezone Name](#get-timezone-by-timezone-name)
+    - [Get Timezone from Any Address](#get-timezone-from-any-address)
+    - [Get Timezone from Location Coordinates](#get-timezone-from-location-coordinates)
+    - [Get Timezone and Airport Details from IATA Code](#get-timezone-and-airport-details-from-iata-code)
+    - [Get Timezone and City Details from UN/LOCODE](#get-timezone-and-city-details-from-unlocode)
+12. [Timezone Converter Examples](#timezone-converter-examples)
+    - [Convert Current Time from One Timezone to Another](#convert-current-time-from-one-timezone-to-another)
+13. [User Agent API Examples](#user-agent-api-examples)
+    - [Parse a Basic User Agent String](#parse-a-basic-user-agent-string)
+    - [Bulk User Agent Parsing Example](#bulk-user-agent-parsing-example)
+14. [Astronomy API Examples](#astronomy-api-examples)
+    - [Astronomy by Coordinates](#astronomy-by-coordinates)
+    - [Astronomy by IP Address](#astronomy-by-ip-address)
+    - [Astronomy by Location String](#astronomy-by-location-string)
+    - [Astronomy for Specific Date](#astronomy-for-specific-date)
+    - [Astronomy in Different Language](#astronomy-in-different-language)
+15. [Models](#models)
 
-- [Installation](#installation)
-  - [Using Composer](#using-composer)
-  - [Manual Installation](#manual-installation)
-- [Authentication Setup](#authentication-setup)
-- [API Endpoints](#api-endpoints)
-- [Examples](#example-usage)
-  - [IP Geolocation Examples](#ip-geolocation-examples)
-  - [Bulk IP Geolocation Examples](#bulk-ip-geolocation-examples)
-  - [IP Security Examples](#ip-security-examples)
-  - [ASN API Examples](#asn-api-examples)
-  - [Timezone API Examples](#timezone-api-examples)
-  - [User Agent API Examples](#user-agent-api-examples)
-  - [Astronomy API Examples](#astronomy-api-examples)
-  - [Abuse Contact API Examples](#abuse-contact-api-examples)
-- [Models](#models)
-- [License](#license)
+## Requirements
+- PHP 8.1 or higher
+- Composer
+- Guzzle (installed automatically via Composer)
 
----
-
-# Installation
-
-## Using Composer
+## Installation
+### Using Composer
 
 It is recommended to install the SDK using Composer:
 
@@ -39,77 +88,106 @@ If you want to include a local development version:
 composer install
 ```
 
-## Manual Installation
+### Manual Installation
 If you wish to manually include the SDK without Composer:
+1. Clone this repository
+2. Include the autoload.php from the vendor folder:
+   ```php
+   require_once('/path/to/vendor/autoload.php');
+   ```
+3. Ensure dependencies in `vendor/` are installed via:
+   ```bash
+   composer install
+   ```
 
-  1. Clone this repository
+## API Plan Tiers and Documentation
 
-  2. Include the autoload.php from the vendor folder:
-  ```php
-  require_once('/path/to/vendor/autoload.php');
-  ```
-  3. Ensure dependencies in vendor/ are installed via:
-  ```bash
-  composer install
-  ```
-  ## Requirements
-  - PHP 8.1 or higher
+The documentation below corresponds to the four available API tier plans:
 
-  - Composer
+- **Developer Plan** (Free): [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Free)
+- **Standard Plan**: [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Standard)
+- **Advance Plan**: [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Advance)
+- **Security Plan**: [Full Documentation](https://ipgeolocation.io/ip-security-api.html#documentation-overview)
 
-  - Guzzle (installed automatically via Composer)
----
+For a detailed comparison of what each plan offers, visit the [Pricing Page](https://ipgeolocation.io/pricing.html).
 
-# Authentication Setup
-To authenticate API requests, you will need an API key from ipgeolocation.io. Once obtained, configure the SDK like this:
+## API Endpoints
 
+All URIs are relative to *https://api.ipgeolocation.io/v2*
+
+| Class               | Method                                                                                                                                                           | HTTP request              | Description                                                             |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|-------------------------------------------------------------------------|
+| *IPGeolocationAPI*  | [**getIpGeolocation**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPGeolocationAPI.md#getipgeolocation)                        | **GET** /ipgeo            | Get geolocation data for a single IP address                            |
+| *IPGeolocationAPI*  | [**getBulkIpGeolocation**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPGeolocationAPI.md#getbulkipgeolocation)                | **POST** /ipgeo-bulk      | Get geolocation data for multiple IP addresses in a single API request  |
+| *IPSecurityAPI*     | [**getIpSecurityInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPSecurityAPI.md#getipsecurityinfo)                         | **GET** /security         | Retrieve security information (VPN, TOR, proxy, etc.) for a single IP   |
+| *IPSecurityAPI*     | [**getBulkIpSecurityInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPSecurityAPI.md#getbulkipsecurityinfo)                 | **POST** /security-bulk   | Retrieve security threat intelligence for multiple IPs                  |
+| *ASNLookupAPI*      | [**getAsnInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/ASNLookupAPI.md#getasninfo)                                        | **GET** /asn              | Get details of any ASN number or associated IP address                  |
+| *AbuseContactAPI*   | [**getAbuseContactInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/AbuseContactAPI.md#getabusecontactinfo)                   | **GET** /abuse            | Retrieve abuse reporting contact information for a given IP address     |
+| *AstronomyAPI*      | [**getAstronomyDetails**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/AstronomyAPI.md#getastronomydetails)                      | **GET** /astronomy        | Get sunrise, sunset, moonrise, moonset, and related data for a location |
+| *TimezoneAPI*       | [**getTimezoneInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/TimezoneAPI.md#gettimezoneinfo)                               | **GET** /timezone         | Timezone information details                                            |
+| *TimeConversionAPI* | [**convertTimeBetweenTimezones**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/TimeConversionAPI.md#converttimebetweentimezones) | **GET** /timezone/convert | Convert time between two specified timezones                            |
+| *UserAgentAPI*      | [**getUserAgentDetails**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#getuseragentdetails)                      | **GET** /user-agent       | Get details of user-agent                                               |
+| *UserAgentAPI*      | [**parseUserAgentString**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#parseuseragentstring)                    | **POST** /user-agent      | Handle single User-Agent string                                         |
+| *UserAgentAPI*      | [**parseBulkUserAgentStrings**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#parsebulkuseragentstrings)          | **POST** /user-agent-bulk | Handle multiple user-agent string lookups                               |
+
+## Fields and Methods Availability
+IP Geolocation offers four plans from billing point of view: **Free, Standard, Security, Advance**. The availability of each method calling from the respective class, over all plans are presented below.
+
+| Class               | Method                                                                                                                                                              | Free | Standard | Security | Advance |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----:|:--------:|:--------:|:-------:|
+| *IPGeolocationApi*  | [**getIpGeolocation**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPGeolocationAPI.md#get_ip_geolocation)                         |  ✔   |    ✔     |    ✖     |    ✔    |
+| *IPGeolocationApi*  | [**getBulkIpGeolocation**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPGeolocationAPI.md#get_bulk_ip_geolocation)                |  ✖   |    ✔     |    ✖     |    ✔    |
+| *IPSecurityApi*     | [**getIpSecurityInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPSecurityAPI.md#get_ip_security_info)                         |  ✖   |    ✖     |    ✔     |    ✖    |
+| *IPSecurityApi*     | [**getBulkIpSecurityInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/IPSecurityAPI.md#get_bulk_ip_security_info)                |  ✖   |    ✖     |    ✔     |    ✖    |
+| *ASNLookupApi*      | [**getAsnInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/ASNLookupAPI.md#get_asn_info)                                         |  ✖   |    ✖     |    ✖     |    ✔    |
+| *AbuseContactApi*   | [**getAbuseContactInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/AbuseContactAPI.md#get_abuse_contact_info)                   |  ✖   |    ✖     |    ✖     |    ✔    |
+| *AstronomyApi*      | [**getAstronomyDetails**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/AstronomyAPI.md#get_astronomy_details)                       |  ✔   |    ✔     |    ✔     |    ✔    |
+| *TimezoneApi*       | [**getTimezoneInfo**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/TimezoneAPI.md#get_timezone_info)                                |  ✔   |    ✔     |    ✔     |    ✔    |
+| *TimeConversionApi* | [**convertTimeBetweenTimezones**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/TimeConversionAPI.md#convert_time_between_timezones) |  ✔   |    ✔     |    ✔     |    ✔    |
+| *UserAgentApi*      | [**getUserAgentDetails**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#get_user_agent_details)                      |  ✔   |    ✔     |    ✔     |    ✔    |
+| *UserAgentApi*      | [**parseUserAgentString**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#parse_user_agent_string)                    |  ✔   |    ✔     |    ✔     |    ✔    |
+| *UserAgentApi*      | [**parseBulkUserAgentStrings**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#parse_bulk_user_agent_strings)         |  ✖   |    ✔     |    ✔     |    ✔    |
+
+> [!TIP]
+> The availability of fields in every API endpoint across all API plans is provided in the **_Reference Table_** within each respective API Documentation. e.g., for IPGeolocationApi, please visit [https://ipgeolocation.io/ip-location-api.html#reference-to-ipgeolocation-api-response](https://ipgeolocation.io/ip-location-api.html#reference-to-ipgeolocation-api-response).
+
+
+## Authentication Setup
+To authenticate API requests, you will need an API key from [ipgeolocation.io](https://ipgeolocation.io/).
+
+### How to Get Your API Key
+
+1. **Sign up** here: [https://app.ipgeolocation.io/signup](https://app.ipgeolocation.io/signup)
+2. **(optional)** Verify your email, if you signed up using email.
+3. **Log in** to your account: [https://app.ipgeolocation.io/login](https://app.ipgeolocation.io/login)
+4. After logging in, navigate to your **Dashboard** to find your API key: [https://app.ipgeolocation.io/dashboard](https://app.ipgeolocation.io/dashboard)
+
+<a id="ApiKeyAuth"></a>
+### ApiKeyAuth
+Once you've obtained the api key, configure your can configure it as follows:
 ```php
+<?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $config = Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
     ->setApiKey('apiKey', 'YOUR_API_KEY_HERE');
 ```
-> **Security Tip:**  
+> [!TIP]
 > Do not hardcode your API keys in code that is committed to public repositories.  
-> Consider using environment variables or a secure vault instead.
+> Consider using environment variables or a secure vault instead. IPGeolocation.io also provides request origins (CORS) approach to eliminate the apiKey parameter. Check [https://ipgeolocation.io/documentation.html#authorization](https://ipgeolocation.io/documentation.html#authorization).
 
-
-# API Endpoints
-
-All URIs are relative to *https://api.ipgeolocation.io/v2*
-
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*ASNLookupAPI* | [**getAsnInfo**](docs/Api/ASNLookupAPI.md#getasninfo) | **GET** /asn | Get details of any ASN number or associated IP address
-*AbuseContactAPI* | [**getAbuseContactInfo**](docs/Api/AbuseContactAPI.md#getabusecontactinfo) | **GET** /abuse | Retrieve abuse reporting contact information for a given IP address
-*AstronomyAPI* | [**getAstronomyDetails**](docs/Api/AstronomyAPI.md#getastronomydetails) | **GET** /astronomy | Get sunrise, sunset, moonrise, moonset, and related data for a location
-*IPGeolocationAPI* | [**getBulkIpGeolocation**](docs/Api/IPGeolocationAPI.md#getbulkipgeolocation) | **POST** /ipgeo-bulk | Get geolocation data for multiple IP addresses in a single API request
-*IPGeolocationAPI* | [**getIpGeolocation**](docs/Api/IPGeolocationAPI.md#getipgeolocation) | **GET** /ipgeo | 	Get geolocation data for a single IP address
-*IPSecurityAPI* | [**getBulkIpSecurityInfo**](docs/Api/IPSecurityAPI.md#getbulkipsecurityinfo) | **POST** /security-bulk | Retrieve security threat intelligence for multiple IPs
-*IPSecurityAPI* | [**getIpSecurityInfo**](docs/Api/IPSecurityAPI.md#getipsecurityinfo) | **GET** /security | Retrieve security information (VPN, TOR, proxy, etc.) for a single IP
-*TimeConversionAPI* | [**convertTimeBetweenTimezones**](docs/Api/TimeConversionAPI.md#converttimebetweentimezones) | **GET** /timezone/convert | Convert time between two specified timezones
-*TimezoneAPI* | [**getTimezoneInfo**](docs/Api/TimezoneAPI.md#gettimezoneinfo) | **GET** /timezone | Timezone information details
-*UserAgentAPI* | [**getUserAgentDetails**](docs/Api/UserAgentAPI.md#getuseragentdetails) | **GET** /user-agent | Get details of user-agent
-*UserAgentAPI* | [**parseBulkUserAgentStrings**](docs/Api/UserAgentAPI.md#parsebulkuseragentstrings) | **POST** /user-agent-bulk | Handle multiple user-agent string lookups
-*UserAgentAPI* | [**parseUserAgentString**](docs/Api/UserAgentAPI.md#parseuseragentstring) | **POST** /user-agent | Handle single User-Agent string
----
-
-# Example Usage
 
 ## IP Geolocation Examples
 
-This section shows how to use the `getIpGeolocation` method from the PHP SDK across Free, Standard, and Advanced subscription tiers. Each example highlights different parameter combinations: `fields`, `include`, and `excludes`.
+This section shows how to use the `getIpGeolocation()` method from the PHP SDK across **Free**, **Standard**, and **Advanced** subscription tiers. Each example highlights different parameter combinations: `fields`, `include`, and `excludes`.
 
-### Parameters
+**Parameters**
 
-- `fields`  
-  Use this parameter to include specific fields in the response.
+- `fields`: Use this parameter to include specific fields in the response.
 
-- `excludes`  
-  Use this parameter to omit specific fields from the response.
+- `excludes`: Use this parameter to omit specific fields from the response.
 
-- `include`  
-  Use this parameter to add optional modules to the response, such as:
+- `include`: Use this parameter to add optional modules to the response, such as:
   - `security`
   - `user_agent`
   - `hostname`
@@ -121,15 +199,15 @@ This section shows how to use the `getIpGeolocation` method from the PHP SDK acr
 
 For the full list of supported fields and modules, please refer to the official [IP Geolocation API Documentation](https://ipgeolocation.io/ip-location-api.html#documentation-overview).
 
-The `ip` parameter in the SDK can accept any valid IPv4 address, IPv6 address, or domain name. If the `ip` parameter is not specified, the API will return information about the public IP of the machine where the SDK is running.
+The `ip` parameter in the SDK can accept any valid IPv4 address, IPv6 address, or domain name. If the `ip=` parameter is not specified, the API will return information about the public IP of the machine where the SDK is running.
 
----
 
-## Developer (Free) Plan Examples
+### Developer (Free) Plan Examples
 
-### Default Fields
+#### Get Default Fields
 
 ```php
+<?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
@@ -156,7 +234,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "location": {
@@ -196,9 +274,12 @@ Sample Response:
     }
 }                                                                    
 ```
-### Filtering Specific Fields from the Response
-Use the fields and excludes parameters:
+
+Filtering Specific Fields from the Response (Use of '`exclude`' and '`fields`')
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
+    new GuzzleHttp\Client(), $config);
+
 try {
     $response = $apiInstance->getIpGeolocation(
         "8.8.4.4",                                     // IP
@@ -215,7 +296,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.4.4",
     "location": {
@@ -239,16 +320,10 @@ Sample Response:
 } 
 ```
 
-## Standard Plan Examples
-
-### Default Fields
+### Standard Plan Examples
+#### Get Default Fields
 
 ```php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
 $apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
     new GuzzleHttp\Client(),
     $config
@@ -270,7 +345,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "location": {
@@ -320,9 +395,14 @@ Sample Response:
     }
 }
 ```
-### Retrieving Geolocation Data in Multiple Languages
+#### Retrieving Geolocation Data in Multiple Languages
 Here is an example to get the geolocation data for IP address '2001:4230:4890::1' in French language:
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
+    new GuzzleHttp\Client(),
+    $config
+);
+
 try {
     $response = $apiInstance->getIpGeolocation(
         "2001:4230:4890::1",  // IP
@@ -339,7 +419,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "2001:4230:4890:0:0:0:0:1",
     "location": {
@@ -388,9 +468,14 @@ Sample Response:
     }
 }
 ```
-### Include Hostname, Timezone and User-Agent
+#### Include Hostname, Timezone and User-Agent
 
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
+    new GuzzleHttp\Client(),
+    $config
+);
+
 try {
     $response = $apiInstance->getIpGeolocation(
         "4.5.6.7",                                             // IP
@@ -407,7 +492,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "4.5.6.7",
     "hostname": "4.5.6.7",
@@ -469,18 +554,22 @@ Sample Response:
     }
 }
 ```
-> **Note on Hostname Parameters**:
->
-> The IP Geolocation API supports hostname lookup for all paid  subscriptions. However, this is not included by default. To enable hostname resolution, use the include parameter with one of the following options:
->  - `hostname`: Performs a quick lookup using the internal hostname database. If no match is found, the IP is returned as-is. This is fast but may produce incomplete results.
->  - `liveHostname`: Queries live sources for accurate hostname resolution. This may increase response time.
->  - `hostnameFallbackLive`: Attempts the internal database first, and falls back to live sources if no result is found. This option provides a balance of speed and reliability.
+> [!NOTE]
+> 
+> The IP Geolocation API supports hostname lookup for all paid  subscriptions. However, this is not included by default. To enable hostname resolution, use the `include` parameter with one of the following options:
+> - `hostname`: Performs a quick lookup using the internal hostname database. If no match is found, the IP is returned as-is. This is fast but may produce incomplete results.
+> - `liveHostname`: Queries live sources for accurate hostname resolution. This may increase response time.
+> - `hostnameFallbackLive`: Attempts the internal database first, and falls back to live sources if no result is found. This option provides a balance of speed and reliability.
 
-## Advanced Plan Examples
-
-### Include DMA, Abuse, and Security
+### Advanced Plan Examples
+#### Include DMA, Abuse, and Security
 
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
+    new GuzzleHttp\Client(),
+    $config
+);
+
 try {
     $response = $apiInstance->getIpGeolocation(
         "8.8.8.8",                                             // IP
@@ -497,7 +586,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "location": {
@@ -588,21 +677,17 @@ Sample Response:
     }
 }
 ```
-These examples demonstrate typical usage of the IP Geolocation API with different subscription tiers. Use fields to specify exactly which data to receive, include for optional data like security and user agent, and excludes to omit specific keys from the response.
+These examples demonstrate typical usage of the IP Geolocation API with different subscription tiers. Use `fields` to specify exactly which data to receive, `include` for optional data like security and user agent, and excludes to omit specific keys from the response.
 
-> **Note**: All features available in the Free plan are also included in the Standard and Advanced plans. Similarly, all features of the Standard plan are available in the Advanced plan.
+> [!NOTE]
+> All features available in the Free plan are also included in the Standard and Advanced plans. Similarly, all features of the Standard plan are available in the Advanced plan.
 
-## Bulk IP Geolocation Example
+### Bulk IP Geolocation Example
 
 The SDK supports bulk IP geolocation requests using the `getBulkIpGeolocation()` method.  
 All parameters like `fields`, `include`, and `excludes` can be used in bulk requests.
 
 ```php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
 $apiInstance = new \Ipgeolocation\Sdk\Api\IPGeolocationAPI(
     new \GuzzleHttp\Client(),
     $config
@@ -630,20 +715,13 @@ try {
 
 ## IP Security Examples
 
-This section shows how to use the `getIpSecurityInfo()` method with various subscription tiers. Each example demonstrates how to query threat intelligence and risk metadata using parameters like `fields`, `excludes`, and `include`.  
+This section shows how to use the `getIpSecurityInfo()` method with various subscription tiers. Each example demonstrates how to query threat intelligence and risk metadata using parameters like `fields`, `excludes`, and `include`.
 
 For the full API specs, refer to [IP Security API Documentation](https://ipgeolocation.io/ip-security-api.html#documentation-overview).
 
----
-
-### 1️⃣ Basic Request (Minimal Setup)
+### Get Default Fields
 
 ```php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
 $apiInstance = new \Ipgeolocation\Sdk\Api\IPSecurityAPI(
     new \GuzzleHttp\Client(),
     $config
@@ -665,7 +743,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "2.56.188.34",
     "security": {
@@ -686,6 +764,11 @@ Sample Response:
 
 ### Include Multiple Optional Fields
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPSecurityAPI(
+    new \GuzzleHttp\Client(),
+    $config
+);
+
 try {
     $response = $apiInstance->getIpSecurityInfo(
         "2.56.188.34",                                 // ip
@@ -701,127 +784,18 @@ try {
     echo "API call failed: {$e->getMessage()}";
 }
 ```
-Sample Response:
-```
-{
-    "ip": "2.56.188.34",
-    "hostname": "2.56.188.34",
-    "security": {
-        "threat_score": 80,
-        "is_tor": false,
-        "is_proxy": true,
-        "proxy_type": "VPN",
-        "proxy_provider": "Nord VPN",
-        "is_anonymous": true,
-        "is_known_attacker": true,
-        "is_spam": false,
-        "is_bot": false,
-        "is_cloud_provider": true,
-        "cloud_provider": "Packethub S.A."
-    },
-    "location": {
-        "continent_code": "NA",
-        "continent_name": "North America",
-        "country_code2": "US",
-        "country_code3": "USA",
-        "country_name": "United States",
-        "country_name_official": "United States of America",
-        "country_capital": "Washington, D.C.",
-        "state_prov": "Texas",
-        "state_code": "US-TX",
-        "district": "Dallas County",
-        "city": "Dallas",
-        "zipcode": "75207",
-        "latitude": "32.78916",
-        "longitude": "-96.82170",
-        "is_eu": false,
-        "country_flag": "https://ipgeolocation.io/static/flags/us_64.png",
-        "geoname_id": "7181768",
-        "country_emoji": "🇺🇸"
-    },
-    "network": {
-        "asn": {
-            "as_number": "AS62240",
-            "organization": "Clouvider Limited",
-            "country": "GB"
-        },
-        "company": {
-            "name": "Packethub S.A."
-        }
-    },
-    "time_zone": {
-        "name": "America/Chicago",
-        "offset": -6,
-        "offset_with_dst": -5,
-        "current_time": "2025-07-02 05:04:04.337-0500",
-        "current_time_unix": 1751450644.337,
-        "is_dst": true,
-        "dst_savings": 1,
-        "dst_exists": true,
-        "dst_start": {
-            "utc_time": "2025-03-09 TIME 08",
-            "duration": "+1H",
-            "gap": true,
-            "date_time_after": "2025-03-09 TIME 03",
-            "date_time_before": "2025-03-09 TIME 02",
-            "overlap": false
-        },
-        "dst_end": {
-            "utc_time": "2025-11-02 TIME 07",
-            "duration": "-1H",
-            "gap": false,
-            "date_time_after": "2025-11-02 TIME 01",
-            "date_time_before": "2025-11-02 TIME 02",
-            "overlap": true
-        }
-    },
-    "user_agent": {
-        "user_agent_string": "Ipgeolocation/2.0.0/PHP",
-        "name": "PHP",
-        "type": "Robot",
-        "version": "??",
-        "version_major": "??",
-        "device": {
-            "name": "PHP",
-            "type": "Robot",
-            "brand": "PHP",
-            "cpu": "Unknown"
-        },
-        "engine": {
-            "name": "PHP",
-            "type": "Robot",
-            "version": "??",
-            "version_major": "??"
-        },
-        "operating_system": {
-            "name": "Cloud",
-            "type": "Cloud",
-            "version": "??",
-            "version_major": "??",
-            "build": "??"
-        }
-    },
-    "country_metadata": {
-        "calling_code": "+1",
-        "tld": ".us",
-        "languages": [
-            "en-US",
-            "es-US",
-            "haw",
-            "fr"
-        ]
-    },
-    "currency": {
-        "code": "USD",
-        "name": "US Dollar",
-        "symbol": "$"
-    }
-}
-```
+
+> [!NOTE] 
+> You can get all the available fields in standard plan in combination with security data, when subscribed to security plan.
 
 ### Request with Field Filtering
 
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\IPSecurityAPI(
+    new \GuzzleHttp\Client(),
+    $config
+);
+
 try {
     $response = $apiInstance->getIpSecurityInfo(
         "195.154.221.54",  // ip
@@ -838,7 +812,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "195.154.221.54",
     "security": {
@@ -849,8 +823,8 @@ Sample Response:
     }
 }
 ```
-## Bulk IP Security Lookup
-The SDK also supports bulk IP Security requests using the getBulkIPSecurityInfo() method. All parameters like fields, include, and excludes can also be used in bulk requests.
+### Bulk IP Security Lookup
+The SDK also supports bulk IP Security requests using the `getBulkIPSecurityInfo()` method. All parameters like `fields`, `include`, and `excludes` can also be used in bulk requests.
 ```php
 $apiInstance = new \Ipgeolocation\Sdk\Api\IPSecurityAPI(
     new \GuzzleHttp\Client()
@@ -877,43 +851,34 @@ try {
 ```
 ## ASN API Examples
 
-This section provides usage examples of the `getAsnInfo()` method from the SDK. These methods allow developers to retrieve detailed ASN-level network data either by ASN number or by IP address. **Note that ASN API is only available in the Advanced subscription plans.**
+This section provides usage examples of the `getAsnInfo()` method from the SDK. These methods allow developers to retrieve detailed ASN-level network data either by ASN number or by IP address.
+
+> [!NOTE]
+> ASN API is only available in the Advanced subscription Plan.
 
 Refer to the [ASN API documentation](https://ipgeolocation.io/asn-api.html#documentation-overview) for a detailed list of supported fields and behaviors.
 
 ### Get ASN Information by IP Address
 ```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\ASNLookupAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
-    $response = $apiInstance->getTimezoneInfo(
-        null,    // tz
-        null,    // location
-        null,    // lat
-        null,    // long
-        "8.8.8.8", // ip
-        null,    // iata_code
-        null,    // icao_code
-        null,    // lo_code
-        null,    // output
-        null     // lang
+    $response = $apiInstance->getAsnInfo(
+        '8.8.8.8',    // ip
+        null,         // asn
+        null,         // include
+        null,         // excludes
+        null          // fields
     );
     echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 } catch (\Exception $e) {
-    echo 'Exception when calling TimezoneAPI->getTimezoneInfo: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ASNLookupAPI->getAsnInfo: ', $e->getMessage(), PHP_EOL;
 }
-
 ```
-Sample Response
-```
+Sample Response:
+```json
 {
     "ip": "8.8.8.8",
     "asn": {
@@ -931,12 +896,17 @@ Sample Response
     }
 }
 ```
+
 ### Get ASN Information by ASN Number
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\ASNLookupAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getAsnInfo(
         null,         // ip
-        15169,        // asn
+        '15169',    // asn
         null,         // include
         null,         // excludes
         null          // fields
@@ -947,7 +917,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "asn": {
@@ -967,6 +937,10 @@ Sample Response:
 ```
 ### Combine All objects using Include
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\ASNLookupAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getAsnInfo(
         null,                                                // ip
@@ -981,7 +955,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "asn": {
         "as_number": "AS12",
@@ -998,16 +972,7 @@ Sample Response:
         "routes": [
             "192.76.177.0/24",
             "216.165.96.0/20",
-            "128.122.0.0/16",
-            "216.165.88.0/24",
-            "192.86.139.0/24",
-            "216.165.103.0/24",
-            "216.165.89.0/24",
-            "216.165.0.0/18",
-            "216.165.112.0/21",
-            "2607:f600::/32",
-            "216.165.64.0/19",
-            "216.165.102.0/24",
+            "...",
             "216.165.120.0/22"
         ],
         "upstreams": [
@@ -1016,36 +981,7 @@ Sample Response:
                 "description": "Telecom Italia S.p.A.",
                 "country": "IT"
             },
-            {
-                "as_number": "AS8220",
-                "description": "COLT Technology Services Group Limited",
-                "country": "GB"
-            },
-            {
-                "as_number": "AS286",
-                "description": "GTT Communications Inc.",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3257",
-                "description": "GTT Communications Inc.",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3754",
-                "description": "NYSERNet",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3356",
-                "description": "Level 3 Parent, LLC",
-                "country": "US"
-            },
-            {
-                "as_number": "AS6461",
-                "description": "Zayo Bandwidth",
-                "country": "US"
-            },
+            "...",
             {
                 "as_number": "AS137",
                 "description": "Consortium GARR",
@@ -1070,61 +1006,130 @@ Sample Response:
                 "description": "Telecom Italia S.p.A.",
                 "country": "IT"
             },
-            {
-                "as_number": "AS8220",
-                "description": "COLT Technology Services Group Limited",
-                "country": "GB"
-            },
-            {
-                "as_number": "AS394666",
-                "description": "NYU Langone Health",
-                "country": "US"
-            },
-            {
-                "as_number": "AS286",
-                "description": "GTT Communications Inc.",
-                "country": "NL"
-            },
-            {
-                "as_number": "AS286",
-                "description": "GTT Communications Inc.",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3257",
-                "description": "GTT Communications Inc.",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3754",
-                "description": "NYSERNet",
-                "country": "US"
-            },
-            {
-                "as_number": "AS3356",
-                "description": "Level 3 Parent, LLC",
-                "country": "US"
-            },
-            {
-                "as_number": "AS6461",
-                "description": "Zayo Bandwidth",
-                "country": "US"
-            },
-            {
-                "as_number": "AS137",
-                "description": "Consortium GARR",
-                "country": "IT"
-            },
+            "...",
             {
                 "as_number": "AS54965",
                 "description": "Polytechnic Institute of NYU",
                 "country": "US"
             }
         ],
-        "whois_response": "\n#\n# ARIN WHOIS data and services are subject to the Terms of Use\n# available at: https://www.arin.net/resources/registry/whois/tou/\n#\n# If you see inaccuracies in the results, please report at\n# https://www.arin.net/resources/registry/whois/inaccuracy_reporting/\n#\n# Copyright 1997-2025, American Registry for Internet Numbers, Ltd.\n#\n\n\nASNumber:       12\nASName:         NYU-DOMAIN\nASHandle:       AS12\nRegDate:        1984-07-05\nUpdated:        2023-05-25    \nRef:            https://rdap.arin.net/registry/autnum/12\n\n\nOrgName:        New York University\nOrgId:          NYU-Z\nAddress:        726 Broadway, 8th Floor - ITS\nCity:           New York\nStateProv:      NY\nPostalCode:     10003\nCountry:        US\nRegDate:        2023-05-15\nUpdated:        2023-05-15\nRef:            https://rdap.arin.net/registry/entity/NYU-Z\n\n\nOrgAbuseHandle: OIS9-ARIN\nOrgAbuseName:   Office of Information Security\nOrgAbusePhone:  +1-212-998-3333 \nOrgAbuseEmail:  abuse@nyu.edu\nOrgAbuseRef:    https://rdap.arin.net/registry/entity/OIS9-ARIN\n\nOrgNOCHandle: COSI-ARIN\nOrgNOCName:   Communications Operations Services - ITS\nOrgNOCPhone:  +1-212-998-3444 \nOrgNOCEmail:  noc-cosi-arin@nyu.edu\nOrgNOCRef:    https://rdap.arin.net/registry/entity/COSI-ARIN\n\nOrgTechHandle: COSI-ARIN\nOrgTechName:   Communications Operations Services - ITS\nOrgTechPhone:  +1-212-998-3444 \nOrgTechEmail:  noc-cosi-arin@nyu.edu\nOrgTechRef:    https://rdap.arin.net/registry/entity/COSI-ARIN\n\nRNOCHandle: COSI-ARIN\nRNOCName:   Communications Operations Services - ITS\nRNOCPhone:  +1-212-998-3444 \nRNOCEmail:  noc-cosi-arin@nyu.edu\nRNOCRef:    https://rdap.arin.net/registry/entity/COSI-ARIN\n\nRTechHandle: COSI-ARIN\nRTechName:   Communications Operations Services - ITS\nRTechPhone:  +1-212-998-3444 \nRTechEmail:  noc-cosi-arin@nyu.edu\nRTechRef:    https://rdap.arin.net/registry/entity/COSI-ARIN\n\n\n#\n# ARIN WHOIS data and services are subject to the Terms of Use\n# available at: https://www.arin.net/resources/registry/whois/tou/\n#\n# If you see inaccuracies in the results, please report at\n# https://www.arin.net/resources/registry/whois/inaccuracy_reporting/\n#\n# Copyright 1997-2025, American Registry for Internet Numbers, Ltd.\n#\n"
+        "whois_response": "<raw-whois-response>"
     }
 }   
 ```
+
+## Abuse Contact API Examples
+This section demonstrates how to use the `getAbuseContactInfo()` method of the AbuseContact API. This API helps security teams, hosting providers, and compliance professionals quickly identify the correct abuse reporting contacts for any IPv4 or IPv6 address. You can retrieve data like the responsible organization, role, contact emails, phone numbers, and address to take appropriate mitigation action against abusive or malicious activity.
+
+> [!NOTE]
+> Abuse Contact API is only available in Advanced subscription Plan.
+
+Refer to the official [Abuse Contact API documentation](https://ipgeolocation.io/ip-abuse-contact-api.html#documentation-overview) for details on all available fields.
+
+### Lookup Abuse Contact by IP
+```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AbuseContactAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
+try {
+    $response = $apiInstance->getAbuseContactInfo(
+        '1.0.0.0',  // ip
+        null,       // excludes
+        null        // fields
+    );
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+} catch (\Exception $e) {
+    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
+}
+```
+Sample Response:
+```json
+{
+    "ip": "1.0.0.0",
+    "abuse": {
+        "route": "1.0.0.0/24",
+        "country": "AU",
+        "handle": "IRT-APNICRANDNET-AU",
+        "name": "IRT-APNICRANDNET-AU",
+        "organization": "",
+        "role": "abuse",
+        "kind": "group",
+        "address": "PO Box 3646\nSouth Brisbane, QLD 4101\nAustralia",
+        "emails": [
+            "helpdesk@apnic.net"
+        ],
+        "phone_numbers": [
+            "+61 7 3858 3100"
+        ]
+    }
+}
+```
+### Lookup Abuse Contact with Specific Fields
+```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AbuseContactAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
+try {
+    $response = $apiInstance->getAbuseContactInfo(
+        '1.2.3.4',                          // ip
+        null,                               // excludes
+        'abuse.role,abuse.emails'           // fields
+    );
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+} catch (\Exception $e) {
+    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
+}
+```
+Sample Response:
+```json
+{
+    "ip": "1.2.3.4",
+    "abuse": {
+        "role": "abuse",
+        "emails": [
+            "helpdesk@apnic.net"
+        ]
+    }
+}
+```
+### Lookup Abuse Contact while Excluding Fields
+```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AbuseContactAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
+try {
+    $response = $apiInstance->getAbuseContactInfo(
+        '9.9.9.9',                             // ip
+        'abuse.handle,abuse.emails',           // excludes
+        null                                   // fields
+    );
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+} catch (\Exception $e) {
+    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
+}
+```
+Sample Response:
+```json
+{
+    "ip": "9.9.9.9",
+    "abuse": {
+        "route": "9.9.9.0/24",
+        "country": "",
+        "name": "Quad9 Abuse",
+        "organization": "Quad9 Abuse",
+        "role": "abuse",
+        "kind": "group",
+        "address": "1442 A Walnut Street Ste 501\nBerkeley\nCA\n94709\nUnited States",
+        "phone_numbers": [
+            "+1-415-831-3129"
+        ]
+    }
+}
+```
+
 ## Timezone API Examples
 This section provides usage examples of the `getTimezoneInfo()` method from the PHP SDK, showcasing how to fetch timezone and time-related data using different query types — IP address, latitude/longitude, timezone ID, IATA code, ICAO code, or UN/LOCODE.
 
@@ -1132,15 +1137,9 @@ For full API specifications, refer to the [Timezone API documentation](https://i
 
 ### Get Timezone by IP Address
 ```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->getTimezoneInfo(
@@ -1162,7 +1161,7 @@ try {
 
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "location": {
@@ -1221,6 +1220,10 @@ Sample Response:
 ```
 ### Get Timezone by Timezone Name
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getTimezoneInfo(
         "Europe/London"    //tz (timezone)
@@ -1231,7 +1234,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "time_zone": {
         "name": "Europe/London",
@@ -1273,6 +1276,10 @@ Sample Response:
 ```
 ### Get Timezone from Any Address
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getTimezoneInfo(
         null,
@@ -1284,7 +1291,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "location": {
         "location_string": "Munich, Germany",
@@ -1335,6 +1342,10 @@ Sample Response:
 ```
 ### Get Timezone from Location Coordinates
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getTimezoneInfo(
         null,
@@ -1348,7 +1359,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "time_zone": {
         "name": "Europe/Paris",
@@ -1390,6 +1401,10 @@ Sample Response:
 ```
 ### Get Timezone and Airport Details from IATA Code
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getTimezoneInfo(
         null,
@@ -1397,7 +1412,7 @@ try {
         null,
         null,
         null,
-        "ZRH"   //IATA Code
+        "ZRH",  //IATA Code
         null    //ICAO Code
     );
     echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -1406,7 +1421,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "airport_details": {
         "type": "large_airport",
@@ -1464,6 +1479,10 @@ Similarly, you can fetch Airport Details and Timezone from using any ICAO code a
 
 ### Get Timezone and City Details from UN/LOCODE
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimezoneAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getTimezoneInfo(
         null,
@@ -1481,7 +1500,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "lo_code_details": {
         "lo_code": "ESBCN",
@@ -1539,15 +1558,9 @@ For more details, refer to the [Timezone Converter API documentation](https://ip
 
 ### Convert Current Time from One Timezone to Another
 ```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\TimeConversionAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\TimeConversionAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->convertTimeBetweenTimezones(
@@ -1573,7 +1586,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "original_time": "2024-12-08T11:00:00+00:00",
     "converted_time": "2024-12-09T01:00:00+00:00",
@@ -1591,14 +1604,14 @@ For full explanation, visit the [User Agent API documentation}(https://ipgeoloca
 ### Parse a Basic User Agent String
 ```php
 <?php
+require_once(__DIR__ . '/vendor/autoload.php');
 
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
 $config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
     ->setApiKey('apiKey', 'YOUR_API_KEY');
 
-$apiInstance = new \Ipgeolocation\Sdk\Api\UserAgentAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\UserAgentAPI(
+    new \GuzzleHttp\Client(),
+    $config);
 
 try {
     $response = $apiInstance->getUserAgentDetails(
@@ -1611,7 +1624,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "user_agent_string": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "name": "Chrome",
@@ -1639,20 +1652,15 @@ Sample Response:
     }
 }
 ```
-> **Note**: If you don’t pass any `userAgentString`, the API will return the data of the device’s user agent automatically.
+> [!NOTE] 
+> If you don’t pass any `userAgentString`, the API will return the data of the device’s user agent automatically.
 
-## Bulk User Agent Parsing Example
-The SDK also supports bulk User Agent parsing using the getBulkUserAgent() method. This allows parsing multiple user agent strings in a single request. All fields available in single-user-agent parsing are returned per entry.
+### Bulk User Agent Parsing Example
+The SDK also supports bulk User Agent parsing using the `getBulkUserAgent()` method. This allows parsing multiple user agent strings in a single request. All fields available in single-user-agent parsing are returned per entry.
 ```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\UserAgentAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\UserAgentAPI(
+    new \GuzzleHttp\Client(),
+    $config);
 
 $bulkRequest = new \Ipgeolocation\Sdk\Model\BulkUserAgentRequest([
     'ua_strings' => [
@@ -1672,20 +1680,14 @@ try {
 }
 ```
 ## Astronomy API Examples
-This section provides usage examples of the getAstronomyDetails() method from the SDK, allowing developers to fetch sun and moon timings and position data based on coordinates, IP, or location string.
+This section provides usage examples of the `getAstronomyDetails()` method from the SDK, allowing developers to fetch sun and moon timings and position data based on coordinates, IP, or location string.
 
 Refer to the official [Astronomy API documentation](https://ipgeolocation.io/astronomy-api.html#documentation-overview) for more details.
 ### Astronomy by Coordinates
 ```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI($client, $config);
+$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->getAstronomyDetails(
@@ -1703,7 +1705,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "location": {
         "country_name": "",
@@ -1767,6 +1769,10 @@ Sample Response:
 ```
 ### Astronomy by IP Address
 ```php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
+
 try {
     $response = $apiInstance->getAstronomyDetails(
         '8.8.8.8',     // ip
@@ -1783,7 +1789,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "8.8.8.8",
     "location": {
@@ -1857,7 +1863,9 @@ Sample Response:
 ```
 ### Astronomy by Location String
 ```php
-<?php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->getAstronomyDetails(
@@ -1875,7 +1883,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "location": {
         "location_string": "Milan, Italy",
@@ -1941,7 +1949,9 @@ Sample Response:
 
 ### Astronomy for Specific Date
 ```php
-<?php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->getAstronomyDetails(
@@ -1959,7 +1969,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "location": {
         "country_name": "Australia",
@@ -2022,9 +2032,15 @@ Sample Response:
 }
 ```
 ### Astronomy in Different Language
-You can also get Astronomy Data in other languages as well. **Only paid subscriptions can access this feature.**
+You can also get Astronomy Data in other languages as well.
+
+> [!NOTE]
+> Only paid subscriptions can access this feature.
+
 ```php
-<?php
+$apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
+    new \GuzzleHttp\Client(), 
+    $config);
 
 try {
     $response = $apiInstance->getAstronomyDetails(
@@ -2042,7 +2058,7 @@ try {
 }
 ```
 Sample Response:
-```
+```json
 {
     "ip": "1.1.1.1",
     "location": {
@@ -2066,211 +2082,57 @@ Sample Response:
     "astronomy": {
         "date": "2025-07-23",
         "current_time": "01:42:01.150",
-        "mid_night": "23:54",
-        "night_end": "05:12",
-        "morning": {
-            "astronomical_twilight_begin": "05:12",
-            "astronomical_twilight_end": "05:40",
-            "nautical_twilight_begin": "05:40",
-            "nautical_twilight_end": "06:09",
-            "civil_twilight_begin": "06:09",
-            "civil_twilight_end": "06:34",
-            "blue_hour_begin": "05:59",
-            "blue_hour_end": "06:18",
-            "golden_hour_begin": "06:18",
-            "golden_hour_end": "07:08"
-        },
-        "sunrise": "06:34",
-        "sunset": "17:15",
-        "evening": {
-            "golden_hour_begin": "16:41",
-            "golden_hour_end": "17:30",
-            "blue_hour_begin": "17:30",
-            "blue_hour_end": "17:49",
-            "civil_twilight_begin": "17:15",
-            "civil_twilight_end": "17:39",
-            "nautical_twilight_begin": "17:39",
-            "nautical_twilight_end": "18:08",
-            "astronomical_twilight_begin": "18:08",
-            "astronomical_twilight_end": "18:36"
-        },
-        "night_begin": "18:36",
-        "sun_status": "-",
-        "solar_noon": "11:54",
-        "day_length": "10:40",
-        "sun_altitude": -64.39025095119509,
-        "sun_distance": 152000449.99796304,
-        "sun_azimuth": 100.80649288067974,
-        "moon_phase": "WANING_CRESCENT",
-        "moonrise": "05:08",
-        "moonset": "15:24",
-        "moon_status": "-",
-        "moon_altitude": -40.144532925112415,
-        "moon_distance": 370299.248550926,
-        "moon_azimuth": 74.74996347782383,
-        "moon_parallactic_angle": -103.29032904814247,
-        "moon_illumination_percentage": "-5.92",
+        "...": "",
         "moon_angle": 331.8302785192621
-    }
-}
-```
-## Abuse Contact API Examples
-This section demonstrates how to use the getAbuseContactInfo() method of the AbuseContact API. This API helps security teams, hosting providers, and compliance professionals quickly identify the correct abuse reporting contacts for any IPv4 or IPv6 address. You can retrieve data like the responsible organization, role, contact emails, phone numbers, and address to take appropriate mitigation action against abusive or malicious activity.**Note that Abuse Contact API is only available in Advanced Plan**
-
-Refer to the official [Abuse Contact API documentation](https://ipgeolocation.io/ip-abuse-contact-api.html#documentation-overview) for details on all available fields.
-
-### Lookup Abuse Contact by IP
-```php
-<?php
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-
-$client = new \GuzzleHttp\Client();
-$config = \Ipgeolocation\Sdk\Configuration::getDefaultConfiguration()
-    ->setApiKey('apiKey', 'YOUR_API_KEY');
-
-$apiInstance = new \Ipgeolocation\Sdk\Api\AbuseContactAPI($client, $config);
-
-try {
-    $response = $apiInstance->getAbuseContactInfo(
-        '1.0.0.0',  // ip
-        null,       // excludes
-        null        // fields
-    );
-    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-} catch (\Exception $e) {
-    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
-}
-```
-Sample Response:
-```
-{
-    "ip": "1.0.0.0",
-    "abuse": {
-        "route": "1.0.0.0/24",
-        "country": "AU",
-        "handle": "IRT-APNICRANDNET-AU",
-        "name": "IRT-APNICRANDNET-AU",
-        "organization": "",
-        "role": "abuse",
-        "kind": "group",
-        "address": "PO Box 3646\nSouth Brisbane, QLD 4101\nAustralia",
-        "emails": [
-            "helpdesk@apnic.net"
-        ],
-        "phone_numbers": [
-            "+61 7 3858 3100"
-        ]
-    }
-}
-```
-### Lookup Abuse Contact with Specific Fields
-```php
-try {
-    $response = $apiInstance->getAbuseContactInfo(
-        '1.2.3.4',                          // ip
-        null,                               // excludes
-        'abuse.role,abuse.emails'           // fields
-    );
-    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-} catch (\Exception $e) {
-    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
-}
-```
-Sample Response:
-```
-{
-    "ip": "1.2.3.4",
-    "abuse": {
-        "role": "abuse",
-        "emails": [
-            "helpdesk@apnic.net"
-        ]
-    }
-}
-```
-### Lookup Abuse Contact while Excluding Fields
-```php
-try {
-    $response = $apiInstance->getAbuseContactInfo(
-        '9.9.9.9',                             // ip
-        'abuse.handle,abuse.emails',           // excludes
-        null                                   // fields
-    );
-    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-} catch (\Exception $e) {
-    echo 'Exception when calling AbuseContactAPI->getAbuseContactInfo: ', $e->getMessage(), PHP_EOL;
-}
-```
-Sample Response:
-```
-{
-    "ip": "9.9.9.9",
-    "abuse": {
-        "route": "9.9.9.0/24",
-        "country": "",
-        "name": "Quad9 Abuse",
-        "organization": "Quad9 Abuse",
-        "role": "abuse",
-        "kind": "group",
-        "address": "1442 A Walnut Street Ste 501\nBerkeley\nCA\n94709\nUnited States",
-        "phone_numbers": [
-            "+1-415-831-3129"
-        ]
     }
 }
 ```
 
 ## Models
 
-- [ASNConnection](docs/Model/ASNConnection.md)
-- [ASNResponse](docs/Model/ASNResponse.md)
-- [ASNDetails](docs/Model/ASNDetails.md)
-- [Abuse](docs/Model/Abuse.md)
-- [AbuseResponse](docs/Model/AbuseResponse.md)
-- [Astronomy](docs/Model/Astronomy.md)
-  [AstronomyEvening](docs/Model/AstronomyEvening.md)
-- [AstronomyLocation](docs/Model/AstronomyLocation.md)
-- [AstronomyMorning](docs/Model/AstronomyMorning.md)
-- [AstronomyResponse](docs/Model/AstronomyResponse.md)
-- [AstronomyXMLResponse](docs/Model/AstronomyXMLResponse.md)
-- [CountryMetadata](docs/Model/CountryMetadata.md)
-- [Currency](docs/Model/Currency.md)
-- [ErrorResponse](docs/Model/ErrorResponse.md)
-- [GeolocationResponse](docs/Model/GeolocationResponse.md)
-- [BulkIPGeolocationResponse](docs/Model/BulkIPGeolocationResponse.md)
-- [BulkIPGeolocationResponse1](docs/Model/BulkIPGeolocationResponse1.md)
-- [BulkIPRequest](docs/Model/BulkIPRequest.md)
-- [BulkIPSecurityResponse](docs/Model/BulkIPSecurityResponse.md)
-- [BulkIPSecurityResponse1](docs/Model/BulkIPSecurityResponse1.md)
-- [Location](docs/Model/Location.md)
-- [LocationMinimal](docs/Model/LocationMinimal.md)
-- [Network](docs/Model/Network.md)
-- [NetworkAsn](docs/Model/NetworkAsn.md)
-- [NetworkCompany](docs/Model/NetworkCompany.md)
-- [NetworkMinimal](docs/Model/NetworkMinimal.md)
-- [NetworkMinimalAsn](docs/Model/NetworkMinimalAsn.md)
-- [NetworkMinimalCompany](docs/Model/NetworkMinimalCompany.md)
-- [BulkUserAgentRequest](docs/Model/BulkUserAgentRequest.md)
-- [UserAgentRequest](docs/Model/UserAgentRequest.md)
-- [Security](docs/Model/Security.md)
-- [IPSecurityAPIResponse](docs/Model/IPSecurityAPIResponse.md)
-- [TimeConversionResponse](docs/Model/TimeConversionResponse.md)
-- [TimeZone](docs/Model/TimeZone.md)
-- [TimeZoneDetailedResponse](docs/Model/TimeZoneDetailedResponse.md)
-- [TimeZoneDstEnd](docs/Model/TimeZoneDstEnd.md)
-- [TimeZoneDstStart](docs/Model/TimeZoneDstStart.md)
-- [TimezoneAirport](docs/Model/TimezoneAirport.md)
-- [TimezoneDetail](docs/Model/TimezoneDetail.md)
-- [TimezoneDetailDstEnd](docs/Model/TimezoneDetailDstEnd.md)
-- [TimezoneDetailDstStart](docs/Model/TimezoneDetailDstStart.md)
-- [TimezoneLocation](docs/Model/TimezoneLocation.md)
-- [TimezoneLocode](docs/Model/TimezoneLocode.md)
-- [UserAgentData](docs/Model/UserAgentData.md)
-- [UserAgentDataDevice](docs/Model/UserAgentDataDevice.md)
-- [UserAgentDataEngine](docs/Model/UserAgentDataEngine.md)
-- [UserAgentDataOperatingSystem](docs/Model/UserAgentDataOperatingSystem.md)
-
-## License
-
-This project is licensed under the [Apache License 2.0](LICENSE).
+- [ASNConnection](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/ASNConnection.md)
+- [ASNResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/ASNResponse.md)
+- [ASNDetails](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/ASNDetails.md)
+- [Abuse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Abuse.md)
+- [AbuseResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/AbuseResponse.md)
+- [Astronomy](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Astronomy.md)
+  [AstronomyEvening](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/AstronomyEvening.md)
+- [AstronomyLocation](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/AstronomyLocation.md)
+- [AstronomyMorning](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/AstronomyMorning.md)
+- [AstronomyResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/AstronomyResponse.md)
+- [CountryMetadata](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/CountryMetadata.md)
+- [Currency](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Currency.md)
+- [ErrorResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/ErrorResponse.md)
+- [GeolocationResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/GeolocationResponse.md)
+- [BulkIPGeolocationResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkIPGeolocationResponse.md)
+- [BulkIPGeolocationResponse1](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkIPGeolocationResponse1.md)
+- [BulkIPRequest](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkIPRequest.md)
+- [BulkIPSecurityResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkIPSecurityResponse.md)
+- [BulkIPSecurityResponse1](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkIPSecurityResponse1.md)
+- [Location](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Location.md)
+- [LocationMinimal](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/LocationMinimal.md)
+- [Network](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Network.md)
+- [NetworkAsn](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/NetworkAsn.md)
+- [NetworkCompany](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/NetworkCompany.md)
+- [NetworkMinimal](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/NetworkMinimal.md)
+- [NetworkMinimalAsn](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/NetworkMinimalAsn.md)
+- [NetworkMinimalCompany](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/NetworkMinimalCompany.md)
+- [BulkUserAgentRequest](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/BulkUserAgentRequest.md)
+- [UserAgentRequest](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/UserAgentRequest.md)
+- [Security](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/Security.md)
+- [IPSecurityAPIResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/IPSecurityAPIResponse.md)
+- [TimeConversionResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimeConversionResponse.md)
+- [TimeZone](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimeZone.md)
+- [TimeZoneDetailedResponse](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimeZoneDetailedResponse.md)
+- [TimeZoneDstEnd](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimeZoneDstEnd.md)
+- [TimeZoneDstStart](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimeZoneDstStart.md)
+- [TimezoneAirport](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneAirport.md)
+- [TimezoneDetail](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneDetail.md)
+- [TimezoneDetailDstEnd](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneDetailDstEnd.md)
+- [TimezoneDetailDstStart](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneDetailDstStart.md)
+- [TimezoneLocation](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneLocation.md)
+- [TimezoneLocode](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/TimezoneLocode.md)
+- [UserAgentData](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/UserAgentData.md)
+- [UserAgentDataDevice](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/UserAgentDataDevice.md)
+- [UserAgentDataEngine](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/UserAgentDataEngine.md)
+- [UserAgentDataOperatingSystem](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Model/UserAgentDataOperatingSystem.md)
