@@ -26,7 +26,7 @@ Based on:
 2. [Installation](#installation)
    - [Using Composer](#using-composer)
    - [Manual Installation](#manual-installation)
-3. [API Plan Tiers and Documentation](#api-plan-tiers-and-documentation)
+3. [API Documentation Links](#api-documentations)
 4. [API Endpoints](#api-endpoints)
 5. [Fields and Methods Availability](#fields-and-methods-availability)
 6. [Authentication Setup](#authentication-setup)
@@ -100,14 +100,17 @@ If you wish to manually include the SDK without Composer:
    composer install
    ```
 
-## API Plan Tiers and Documentation
+## API Documentations
 
-The documentation below corresponds to the four available API tier plans:
-
-- **Developer Plan** (Free): [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Free)
-- **Standard Plan**: [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Standard)
-- **Advance Plan**: [Full Documentation](https://ipgeolocation.io/ip-location-api.html#Advance)
-- **Security Plan**: [Full Documentation](https://ipgeolocation.io/ip-security-api.html#documentation-overview)
+The documentation below corresponds to the available APIs:
+- [**Overview**](https://ipgeolocation.io/documentation.html)
+- [**IP GeoLocation API**](https://ipgeolocation.io/documentation/ip-location-api.html)
+- [**IP Security API**](https://ipgeolocation.io/documentation/ip-security-api.html)
+- [**ASN API**](https://ipgeolocation.io/documentation/asn-api.html)
+- [**IP Abuse Contact API**](https://ipgeolocation.io/documentation/ip-abuse-contact-api.html)
+- [**Timezone API**](https://ipgeolocation.io/documentation/timezone-api.html)
+- [**User-Agent API**](https://ipgeolocation.io/documentation/user-agent-api.html)
+- [**Astronomy API**](https://ipgeolocation.io/documentation/astronomy-api.html)
 
 For a detailed comparison of what each plan offers, visit the [Pricing Page](https://ipgeolocation.io/pricing.html).
 
@@ -149,7 +152,7 @@ IP Geolocation offers four plans from billing point of view: **Free, Standard, S
 | *UserAgentApi*      | [**parseBulkUserAgentStrings**](https://github.com/IPGeolocation/ip-geolocation-api-php/blob/master/docs/Api/UserAgentAPI.md#parse_bulk_user_agent_strings)         |  ✖   |    ✔     |    ✔     |    ✔    |
 
 > [!TIP]
-> The availability of fields in every API endpoint across all API plans is provided in the **_Reference Table_** within each respective API Documentation. e.g., for IPGeolocationApi, please visit [https://ipgeolocation.io/ip-location-api.html#reference-to-ipgeolocation-api-response](https://ipgeolocation.io/ip-location-api.html#reference-to-ipgeolocation-api-response).
+> The availability of fields in every API endpoint across Free and Paid plans is provided in the **_Reference Table_** within each respective API Documentation. e.g., for IPGeolocationApi, please visit [https://ipgeolocation.io/documentation/ip-location-api.html#reference-to-ipgeolocation-api-response](https://ipgeolocation.io/documentation/ip-location-api.html#reference-to-ipgeolocation-api-response).
 
 
 ## Authentication Setup
@@ -197,7 +200,7 @@ This section shows how to use the `getIpGeolocation()` method from the PHP SDK a
   - `dma`
   - `timezone`
 
-For the full list of supported fields and modules, please refer to the official [IP Geolocation API Documentation](https://ipgeolocation.io/ip-location-api.html#documentation-overview).
+For the full list of supported fields and modules, please refer to the official [IP Geolocation API Documentation](https://ipgeolocation.io/documentation/ip-location-api.html).
 
 The `ip` parameter in the SDK can accept any valid IPv4 address, IPv6 address, or domain name. If the `ip=` parameter is not specified, the API will return information about the public IP of the machine where the SDK is running.
 
@@ -717,7 +720,7 @@ try {
 
 This section shows how to use the `getIpSecurityInfo()` method with various subscription tiers. Each example demonstrates how to query threat intelligence and risk metadata using parameters like `fields`, `excludes`, and `include`.
 
-For the full API specs, refer to [IP Security API Documentation](https://ipgeolocation.io/ip-security-api.html#documentation-overview).
+For the full API specs, refer to [IP Security API Documentation](https://ipgeolocation.io/documentation/ip-security-api.html).
 
 ### Get Default Fields
 
@@ -786,7 +789,7 @@ try {
 ```
 
 > [!NOTE] 
-> You can get all the available fields in standard plan in combination with security data, when subscribed to security plan.
+> You can get all the available fields in a paid plan in combination with security data, when subscribed to paid plan.
 
 ### Request with Field Filtering
 
@@ -856,7 +859,7 @@ This section provides usage examples of the `getAsnInfo()` method from the SDK. 
 > [!NOTE]
 > ASN API is only available in the Advanced subscription Plan.
 
-Refer to the [ASN API documentation](https://ipgeolocation.io/asn-api.html#documentation-overview) for a detailed list of supported fields and behaviors.
+Refer to the [ASN API documentation](https://ipgeolocation.io/documentation/asn-api.html) for a detailed list of supported fields and behaviors.
 
 ### Get ASN Information by IP Address
 ```php
@@ -1024,7 +1027,7 @@ This section demonstrates how to use the `getAbuseContactInfo()` method of the A
 > [!NOTE]
 > Abuse Contact API is only available in Advanced subscription Plan.
 
-Refer to the official [Abuse Contact API documentation](https://ipgeolocation.io/ip-abuse-contact-api.html#documentation-overview) for details on all available fields.
+Refer to the official [Abuse Contact API documentation](https://ipgeolocation.io/documentation/ip-abuse-contact-api.html) for details on all available fields.
 
 ### Lookup Abuse Contact by IP
 ```php
@@ -1133,7 +1136,7 @@ Sample Response:
 ## Timezone API Examples
 This section provides usage examples of the `getTimezoneInfo()` method from the PHP SDK, showcasing how to fetch timezone and time-related data using different query types — IP address, latitude/longitude, timezone ID, IATA code, ICAO code, or UN/LOCODE.
 
-For full API specifications, refer to the [Timezone API documentation](https://ipgeolocation.io/timezone-api.html#documentation-overview).
+For full API specifications, refer to the [Timezone API documentation](https://ipgeolocation.io/documentation/timezone-api.html).
 
 ### Get Timezone by IP Address
 ```php
@@ -1554,7 +1557,7 @@ Sample Response:
 ## Timezone Converter Examples
 This section provides usage examples of the `convertTimeBetweenTimezones()` method from the SDK. The Timezone Converter API allows you to convert a specific time from one timezone to another using timezone identifiers and optional date/time inputs.
 
-For more details, refer to the [Timezone Converter API documentation](https://ipgeolocation.io/timezone-api.html#convert-time-bw-time-zones).
+For more details, refer to the [Timezone Converter API documentation](https://ipgeolocation.io/documentation/timezone-api.html#convert-time-between-time-zones).
 
 ### Convert Current Time from One Timezone to Another
 ```php
@@ -1599,7 +1602,7 @@ Similarly, you can convert time from any timezone to another timezone using loca
 ## User Agent API Examples
 This section provides usage examples of the `getUserAgent()` method from the SDK. The User Agent API extracts and classifies information from user agent strings, including browser, engine, device, OS, and type metadata.
 
-For full explanation, visit the [User Agent API documentation}(https://ipgeolocation.io/user-agent-api.html#documentation-overview).
+For full explanation, visit the [User Agent API documentation](https://ipgeolocation.io/documentation/user-agent-api.html).
 
 ### Parse a Basic User Agent String
 ```php
@@ -1682,7 +1685,7 @@ try {
 ## Astronomy API Examples
 This section provides usage examples of the `getAstronomyDetails()` method from the SDK, allowing developers to fetch sun and moon timings and position data based on coordinates, IP, or location string.
 
-Refer to the official [Astronomy API documentation](https://ipgeolocation.io/astronomy-api.html#documentation-overview) for more details.
+Refer to the official [Astronomy API documentation](https://ipgeolocation.io/documentation/astronomy-api.html) for more details.
 ### Astronomy by Coordinates
 ```php
 $apiInstance = new \Ipgeolocation\Sdk\Api\AstronomyAPI(
