@@ -41,9 +41,9 @@ require __DIR__ . '/vendor/autoload.php';
 use Ipgeolocation\Sdk\IpGeolocationClient;
 ```
 
-Packagist package: `ipgeolocation/ipgeolocation-php-sdk`
-Package page: <https://packagist.org/packages/ipgeolocation/ipgeolocation-php-sdk>
-GitHub repository: <https://github.com/IPGeolocation/ip-geolocation-api-php>
+- package: `ipgeolocation/ipgeolocation-php-sdk`
+- Package page: <https://packagist.org/packages/ipgeolocation/ipgeolocation-php-sdk>
+- GitHub repository: <https://github.com/IPGeolocation/ip-geolocation-api-php>
 
 ## Quick Start
 
