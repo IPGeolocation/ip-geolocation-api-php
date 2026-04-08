@@ -1,14 +1,11 @@
 <?php
 
-/**
- * @generated
- * @link https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/HEAD/doc/config.rst
- */
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__)
+    ->in([
+        __DIR__ . '/lib',
+        __DIR__ . '/tests',
+    ])
     ->exclude('vendor')
-    ->exclude('test')
-    ->exclude('tests')
 ;
 
 $config = new PhpCsFixer\Config();
