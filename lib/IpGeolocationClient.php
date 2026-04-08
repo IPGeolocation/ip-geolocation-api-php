@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace Ipgeolocation\Sdk;
 
+/**
+ * Main client for the IPGeolocation.io IP Location API.
+ *
+ * Homepage: https://ipgeolocation.io
+ * IP Location API: https://ipgeolocation.io/ip-location-api.html
+ * Documentation: https://ipgeolocation.io/documentation/ip-location-api.html
+ */
 final class IpGeolocationClient
 {
     private readonly IpGeolocationClientConfig $config;
