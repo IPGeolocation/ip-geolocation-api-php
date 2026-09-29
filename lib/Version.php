@@ -6,7 +6,7 @@ namespace Ipgeolocation\Sdk;
 
 final class Version
 {
-    public const VERSION = '3.0.0';
+    public const VERSION = '3.0.1';
 
     private function __construct()
     {
