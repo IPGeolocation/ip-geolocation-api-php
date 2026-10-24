@@ -8,30 +8,67 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   test:
+    name: PHP ${{ matrix.php-version }} / ${{ matrix.dependencies }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
+        dependencies: [latest]
+        include:
+          - php-version: '8.1'
+            dependencies: lowest
+          - php-version: '8.2'
+            minimum-patched-version: '8.2.35'
+          - php-version: '8.3'
+            minimum-patched-version: '8.3.36'
+          - php-version: '8.4'
+            minimum-patched-version: '8.4.27'
+          - php-version: '8.5'
+            minimum-patched-version: '8.5.12'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: curl
+          extensions: curl, openssl, zlib
           coverage: none
+          tools: composer:v2
+
+      - name: Verify supported runtimes include the security patches
+        if: matrix.minimum-patched-version != ''
+        env:
+          MINIMUM_PATCHED_VERSION: ${{ matrix.minimum-patched-version }}
+        run: php -r 'exit(version_compare(PHP_VERSION, getenv("MINIMUM_PATCHED_VERSION"), ">=") ? 0 : 1);'
 
       - name: Validate Composer
-        run: composer validate
+        run: composer validate --strict
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: |
+          if [ "${{ matrix.dependencies }}" = "lowest" ]; then
+            composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-progress
+          else
+            composer install --prefer-dist --no-interaction --no-progress
+          fi
+
+      - name: Audit all resolved dependencies
+        run: composer audit --locked --format=json
+
+      - name: Check PHP syntax
+        run: find lib tests -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: Run unit tests
-        run: ./vendor/bin/phpunit --exclude-group live
+        run: composer test:unit

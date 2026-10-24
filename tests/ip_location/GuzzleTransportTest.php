@@ -6,6 +6,7 @@ namespace Ipgeolocation\Sdk\Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -16,9 +17,64 @@ use Ipgeolocation\Sdk\HttpRequestData;
 use Ipgeolocation\Sdk\RequestTimeoutException;
 use Ipgeolocation\Sdk\TransportException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class GuzzleTransportTest extends TestCase
 {
+    public static function transportErrors(): array
+    {
+        return [['connect'], ['request']];
+    }
+
+    #[DataProvider('transportErrors')]
+    public function testTransportDiagnosticsRedactApiKeys(string $kind): void
+    {
+        $credential = 'unit-test-credential';
+        $url = 'https://api.ipgeolocation.io/v3/ipgeo?apiKey=' . $credential . '&ip=8.8.8.8';
+        $request = new Request('GET', $url);
+        $previous = new \RuntimeException('Request failed for ' . $url);
+        $context = ['errno' => 60, 'url' => $url];
+        $cause = $kind === 'connect'
+            ? new ConnectException('TLS failure for ' . $url, $request, $previous, $context)
+            : new RequestException('Transfer failure for ' . $url, $request, null, $previous, $context);
+        $transport = new GuzzleTransport(new Client(['handler' => HandlerStack::create(new MockHandler([$cause]))]));
+
+        try {
+            $transport->sendRequest(new HttpRequestData($url, 'GET', [], null, 1.0, 1.0));
+            self::fail('Expected a transport error');
+        } catch (TransportException $error) {
+            self::assertInstanceOf($cause::class, $error->cause);
+            self::assertStringNotContainsString($credential, (string) $error);
+            self::assertStringNotContainsString($credential, (string) $error->cause->getRequest()->getUri());
+            self::assertStringNotContainsString($credential, json_encode($error->cause->getHandlerContext(), JSON_THROW_ON_ERROR));
+            self::assertSame(60, $error->cause->getHandlerContext()['errno']);
+        }
+    }
+
+    public function testClosesResponseStreamsAfterReading(): void
+    {
+        $stream = \GuzzleHttp\Psr7\Utils::streamFor('{}');
+        $transport = new GuzzleTransport(new Client([
+            'handler' => HandlerStack::create(new MockHandler([new Response(200, [], $stream)])),
+        ]));
+        $response = $transport->sendRequest(new HttpRequestData('https://example.com', 'GET', [], null, 1.0, 1.0));
+        self::assertSame('{}', $response->body);
+        self::assertFalse($stream->isReadable());
+    }
+
+    public function testReadsANonSeekableResponse(): void
+    {
+        $stream = \GuzzleHttp\Psr7\FnStream::decorate(\GuzzleHttp\Psr7\Utils::streamFor('{}'), [
+            'isSeekable' => static fn (): bool => false,
+        ]);
+        $transport = new GuzzleTransport(new Client([
+            'handler' => HandlerStack::create(new MockHandler([new Response(200, [], $stream)])),
+        ]));
+        $response = $transport->sendRequest(new HttpRequestData('https://example.com', 'GET', [], null, 1.0, 1.0));
+        self::assertSame('{}', $response->body);
+        self::assertFalse($stream->isReadable());
+    }
+
     public function testPassesBodyProgressTimeoutToCurlOptions(): void
     {
         $history = [];

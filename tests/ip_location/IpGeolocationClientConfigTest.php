@@ -62,4 +62,15 @@ final class IpGeolocationClientConfigTest extends TestCase
         self::assertSame(10, $decoded['connect_timeout']);
         self::assertSame(30, $decoded['read_timeout']);
     }
+
+    public function testDebugOutputRedactsApiKey(): void
+    {
+        $config = new IpGeolocationClientConfig(api_key: 'unit-test-credential');
+        ob_start();
+        var_dump($config);
+        $debug = (string) ob_get_clean();
+        self::assertStringNotContainsString('unit-test-credential', $debug);
+        self::assertStringContainsString('[REDACTED]', $debug);
+        self::assertSame('unit-test-credential', $config->api_key);
+    }
 }

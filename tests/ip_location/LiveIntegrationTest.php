@@ -13,11 +13,11 @@ use PHPUnit\Framework\TestCase;
 #[Group('live')]
 final class LiveIntegrationTest extends TestCase
 {
-    private static function shouldRunLiveTests(): bool
+    private static function shouldRunLiveTests(string $key): bool
     {
         return getenv('IPGEO_RUN_LIVE_TESTS') === 'true'
-            && getenv('IPGEO_FREE_KEY') !== false
-            && getenv('IPGEO_PAID_KEY') !== false;
+            && getenv($key) !== false
+            && trim((string) getenv($key)) !== '';
     }
 
     private function freeClient(): IpGeolocationClient
@@ -32,8 +32,8 @@ final class LiveIntegrationTest extends TestCase
 
     public function testFreePlanBaseLookupWorks(): void
     {
-        if (!self::shouldRunLiveTests()) {
-            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true, IPGEO_FREE_KEY, and IPGEO_PAID_KEY to enable live tests');
+        if (!self::shouldRunLiveTests('IPGEO_FREE_KEY')) {
+            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true and IPGEO_FREE_KEY to enable free-plan tests');
         }
 
         $response = $this->freeClient()->lookupIpGeolocation(['ip' => '8.8.8.8']);
@@ -42,8 +42,8 @@ final class LiveIntegrationTest extends TestCase
 
     public function testFreePlanDomainLookupIsRejected(): void
     {
-        if (!self::shouldRunLiveTests()) {
-            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true, IPGEO_FREE_KEY, and IPGEO_PAID_KEY to enable live tests');
+        if (!self::shouldRunLiveTests('IPGEO_FREE_KEY')) {
+            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true and IPGEO_FREE_KEY to enable free-plan tests');
         }
 
         $this->expectException(ApiException::class);
@@ -52,8 +52,8 @@ final class LiveIntegrationTest extends TestCase
 
     public function testPaidPlanBulkMixedLookupReturnsSuccessAndErrorItems(): void
     {
-        if (!self::shouldRunLiveTests()) {
-            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true, IPGEO_FREE_KEY, and IPGEO_PAID_KEY to enable live tests');
+        if (!self::shouldRunLiveTests('IPGEO_PAID_KEY')) {
+            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true and IPGEO_PAID_KEY to enable paid-plan tests');
         }
 
         $response = $this->paidClient()->bulkLookupIpGeolocation([
@@ -69,8 +69,8 @@ final class LiveIntegrationTest extends TestCase
 
     public function testPaidPlanRawXmlWorks(): void
     {
-        if (!self::shouldRunLiveTests()) {
-            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true, IPGEO_FREE_KEY, and IPGEO_PAID_KEY to enable live tests');
+        if (!self::shouldRunLiveTests('IPGEO_PAID_KEY')) {
+            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true and IPGEO_PAID_KEY to enable paid-plan tests');
         }
 
         $response = $this->paidClient()->lookupIpGeolocationRaw([
@@ -79,5 +79,24 @@ final class LiveIntegrationTest extends TestCase
         ]);
 
         self::assertStringContainsString('<', $response->data);
+    }
+
+    public function testPaidPlanDomainAndIpv6LookupsWork(): void
+    {
+        if (!self::shouldRunLiveTests('IPGEO_PAID_KEY')) {
+            self::markTestSkipped('Set IPGEO_RUN_LIVE_TESTS=true and IPGEO_PAID_KEY to enable paid-plan tests');
+        }
+
+        $client = $this->paidClient();
+        try {
+            $ipv6 = $client->lookupIpGeolocation(['ip' => '2001:4860:4860::8888']);
+            self::assertSame(inet_pton('2001:4860:4860::8888'), inet_pton((string) $ipv6->data->ip));
+            self::assertSame(200, $ipv6->metadata->status_code);
+            $domain = $client->lookupIpGeolocation(['ip' => 'ipgeolocation.io']);
+            self::assertNotEmpty($domain->data->ip);
+            self::assertSame(200, $domain->metadata->status_code);
+        } finally {
+            $client->close();
+        }
     }
 }

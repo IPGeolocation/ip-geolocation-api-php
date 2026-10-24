@@ -11,9 +11,46 @@ use Ipgeolocation\Sdk\ResponseFormat;
 use Ipgeolocation\Sdk\ValidationException;
 use Ipgeolocation\Sdk\Test\Support\FakeTransport;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class IpGeolocationClientTest extends TestCase
 {
+    public static function malformedHeaders(): iterable
+    {
+        $cases = [
+            'name_space' => ['headers' => ['Bad Name' => 'value']],
+            'name_colon' => ['headers' => ['Bad:Name' => 'value']],
+            'name_crlf' => ['headers' => ["Bad\r\nInjected" => 'value']],
+            'value_crlf' => ['headers' => ['X-Test' => "value\r\nInjected: yes"]],
+            'value_nul' => ['headers' => ['X-Test' => "before\0after"]],
+            'value_del' => ['headers' => ['X-Test' => "before\x7fafter"]],
+            'user_agent_crlf' => ['user_agent' => "agent\r\nInjected: yes"],
+            'user_agent_nul' => ['user_agent' => "agent\0suffix"],
+        ];
+        foreach ($cases as $name => $request) {
+            yield $name . '_single' => [false, $request];
+            yield $name . '_bulk' => [true, $request];
+        }
+    }
+
+    #[DataProvider('malformedHeaders')]
+    public function testMalformedHeadersAreRejectedBeforeAnyTransportCall(bool $bulk, array $request): void
+    {
+        $transport = new FakeTransport();
+        $transport->push(new HttpResponseData(200, $bulk ? '[{"ip":"8.8.8.8"}]' : '{"ip":"8.8.8.8"}', []));
+        $client = new IpGeolocationClient(['api_key' => 'test-key'], $transport);
+        try {
+            if ($bulk) {
+                $client->bulkLookupIpGeolocation(['ips' => ['8.8.8.8']] + $request);
+            } else {
+                $client->lookupIpGeolocation(['ip' => '8.8.8.8'] + $request);
+            }
+            self::fail('Expected invalid HTTP headers to be rejected');
+        } catch (ValidationException) {
+            self::assertSame([], $transport->requests);
+        }
+    }
+
     public function testLookupBuildsExpectedGetRequest(): void
     {
         $transport = new FakeTransport();

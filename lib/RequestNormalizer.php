@@ -50,6 +50,9 @@ final class RequestNormalizer
             if (str_contains($name, "\r") || str_contains($name, "\n")) {
                 throw new ValidationException('header names must not contain CR or LF');
             }
+            if (preg_match('/^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$/D', $name) !== 1) {
+                throw new ValidationException('header names must be valid HTTP tokens');
+            }
 
             $values = is_array($rawValue) ? $rawValue : [$rawValue];
             if ($values === []) {
@@ -70,6 +73,9 @@ final class RequestNormalizer
                 if (str_contains($text, "\r") || str_contains($text, "\n")) {
                     throw new ValidationException('header values must not contain CR or LF');
                 }
+                if (preg_match('/[\x00-\x08\x0a-\x1f\x7f]/', $text) === 1) {
+                    throw new ValidationException('header values must not contain control characters');
+                }
 
                 $normalizedValues[] = $text;
             }
@@ -89,6 +95,9 @@ final class RequestNormalizer
         $normalized = trim($value);
         if ($normalized === '') {
             throw new ValidationException($field . ' must not be blank');
+        }
+        if (preg_match('/[\x00-\x08\x0a-\x1f\x7f]/', $normalized) === 1) {
+            throw new ValidationException($field . ' must not contain control characters');
         }
 
         return $normalized;

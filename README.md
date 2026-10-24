@@ -11,6 +11,7 @@ Look up IPv4, IPv6, and domains with `/v3/ipgeo` and `/v3/ipgeo-bulk`. Get geolo
 ## Table of Contents
 
 - [Installation](#installation)
+- [Runtime Security](#runtime-security)
 - [Quick Start](#quick-start)
 - [At a Glance](#at-a-glance)
 - [Get Your API Key](#get-your-api-key)
@@ -25,6 +26,7 @@ Look up IPv4, IPv6, and domains with `/v3/ipgeo` and `/v3/ipgeo-bulk`. Get geolo
 - [Errors](#errors)
 - [Troubleshooting](#troubleshooting)
 - [Frequently Asked Questions](#frequently-asked-questions)
+- [Development and Testing](#development-and-testing)
 - [Links](#links)
 
 ## Installation
@@ -44,6 +46,51 @@ use Ipgeolocation\Sdk\IpGeolocationClient;
 - package: `ipgeolocation/ipgeolocation-php-sdk`
 - Package page: <https://packagist.org/packages/ipgeolocation/ipgeolocation-php-sdk>
 - GitHub repository: <https://github.com/IPGeolocation/ip-geolocation-api-php>
+
+## Runtime Security
+
+PHP 8.1 is the SDK's language compatibility minimum. Production applications
+must use a security-patched PHP runtime. The SDK cannot repair PHP engine
+vulnerabilities through a Composer update.
+
+The [21 October 2026 PHP advisory](https://www.php.net/archive/2026.php#2026-10-21-5)
+lists these minimum upstream fixes for CVE-2026-109618 and CVE-2026-109619:
+
+| PHP branch | Minimum patched version |
+| --- | --- |
+| 8.2 | 8.2.35 |
+| 8.3 | 8.3.36 |
+| 8.4 | 8.4.27 |
+| 8.5 | 8.5.12 |
+
+Install the latest security release in a supported branch, or verify that your
+distribution/vendor package includes the fixes. PHP 8.1 is upstream end of life;
+its CI jobs check SDK compatibility and do not certify the runtime as secure.
+Legacy deployments need verified vendor backports or an upgrade to supported PHP.
+
+Update the packages used by the web server and restart the PHP workers. Verify
+the package revision used by PHP-FPM, Apache or your other web SAPI; the CLI can
+use a different PHP installation.
+
+Also review the [23 October session-upload advisory](https://www.php.net/archive/2026.php#2026-10-23-1)
+for CVE-2026-115560. It concerns applications that configure the session serializer
+as `php_binary` or `php_serialize`, switch it to `php` at runtime before
+`session_start()`, and leave session upload progress enabled. Follow PHP's
+`session.upload_progress.enabled=0` guidance for that configuration until the
+upstream fix is available. The SDK does not configure PHP sessions.
+
+Keep the application's own dependency lock updated and audited:
+
+```bash
+composer update guzzlehttp/guzzle guzzlehttp/psr7 guzzlehttp/promises --with-all-dependencies
+composer audit --locked
+```
+
+Keep TLS certificate verification enabled. The default transport verifies the
+server certificate and hostname, bounds decoded response bytes and closes
+response streams after use. Custom Guzzle clients should retain these TLS checks.
+Configuration serialization/debug output and transport exception diagnostics redact
+API keys in request URLs. Treat credentials and raw request objects as sensitive.
 
 ## Quick Start
 
@@ -400,6 +447,29 @@ Use the raw methods with <code>output =&gt; "xml"</code>.
 <summary><strong>How do I read bulk errors?</strong></summary>
 Check <code>$result-&gt;success</code>. Success items use <code>$result-&gt;data</code>. Error items use <code>$result-&gt;error-&gt;message</code>.
 </details>
+
+## Development and Testing
+
+```bash
+composer install
+composer validate --strict
+composer audit --locked
+composer test:unit
+```
+
+The unit suite includes real local HTTP and TLS servers. It checks single and
+bulk requests, certificate trust and hostname verification, stalled responses,
+truncated responses, redirects and decoded response-size limits, including gzip.
+These tests need the OpenSSL extension and `proc_open`, and require no API key.
+CI runs the suite on PHP 8.1 through 8.5 and checks the lowest allowed dependency
+set on PHP 8.1. Supported runtime jobs enforce the security versions listed above.
+
+Live tests are opt-in. Supply credentials through the process environment rather
+than saved files or command arguments. Set `IPGEO_RUN_LIVE_TESTS=true` and
+`IPGEO_PAID_KEY` for paid-plan tests, or `IPGEO_FREE_KEY` for free-plan tests.
+`IPGEO_RUN_LIVE_HARDENING=true` enables additional paid response comparisons.
+Run them with `composer test:live`. Live requests consume account credits.
+Never commit credentials or upload unredacted HTTP traces or exception dumps.
 
 ## Links
 
