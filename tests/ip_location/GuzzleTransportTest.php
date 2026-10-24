@@ -75,6 +75,22 @@ final class GuzzleTransportTest extends TestCase
         self::assertFalse($stream->isReadable());
     }
 
+    public function testCustomExceptionConstructorsKeepSdkErrorHandling(): void
+    {
+        $url = 'https://example.com?apiKey=unit-test-credential';
+        $cause = new CustomConnectException(new Request('GET', $url));
+        $transport = new GuzzleTransport(new Client([
+            'handler' => HandlerStack::create(new MockHandler([$cause])),
+        ]));
+        try {
+            $transport->sendRequest(new HttpRequestData($url, 'GET', [], null, 1.0, 1.0));
+            self::fail('Expected a transport error');
+        } catch (TransportException $error) {
+            self::assertInstanceOf(ConnectException::class, $error->cause);
+            self::assertStringNotContainsString('unit-test-credential', (string) $error);
+        }
+    }
+
     public function testPassesBodyProgressTimeoutToCurlOptions(): void
     {
         $history = [];
@@ -166,5 +182,13 @@ final class GuzzleTransportTest extends TestCase
             connect_timeout: 10.0,
             read_timeout: 30.0
         ));
+    }
+}
+
+final class CustomConnectException extends ConnectException
+{
+    public function __construct(Request $request)
+    {
+        parent::__construct('TLS failure for ' . $request->getUri(), $request);
     }
 }

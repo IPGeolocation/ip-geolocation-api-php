@@ -156,6 +156,11 @@ final class GuzzleTransport implements HttpTransport
                 }
             });
             $class = $error::class;
+            $base = $error instanceof ConnectException ? ConnectException::class : RequestException::class;
+            // Custom exception subclasses may require a different constructor signature.
+            if ((new \ReflectionMethod($class, '__construct'))->getDeclaringClass()->getName() !== $base) {
+                $class = $base;
+            }
             if ($error instanceof ConnectException) {
                 return new $class($message, $request, $safePrevious, $context);
             }
