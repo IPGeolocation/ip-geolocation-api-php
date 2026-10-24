@@ -51,7 +51,8 @@ jobs:
         if: matrix.minimum-patched-version != ''
         env:
           MINIMUM_PATCHED_VERSION: ${{ matrix.minimum-patched-version }}
-        run: php -r 'exit(version_compare(PHP_VERSION, getenv("MINIMUM_PATCHED_VERSION"), ">=") ? 0 : 1);'
+        run: |
+          php -r 'exit(version_compare(PHP_VERSION, getenv("MINIMUM_PATCHED_VERSION"), ">=") ? 0 : 1);'
 
       - name: Validate Composer
         run: composer validate --strict
