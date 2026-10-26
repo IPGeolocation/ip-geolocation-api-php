@@ -90,8 +90,16 @@ final class TransportIntegrationTest extends TestCase
         $server = $this->server();
         $started = microtime(true);
         $this->expectException(RequestTimeoutException::class);
+        $this->expectExceptionMessageMatches('/^HTTP request timed out$/');
         try {
-            (new GuzzleTransport())->sendRequest($this->request($server->url . $path));
+            (new GuzzleTransport())->sendRequest(new HttpRequestData(
+                $server->url . $path,
+                'GET',
+                ['Accept' => ['application/json']],
+                null,
+                4.0,
+                1.0
+            ));
         } finally {
             self::assertLessThan(2.5, microtime(true) - $started, 'The transport must not wait for the 3-second response');
         }

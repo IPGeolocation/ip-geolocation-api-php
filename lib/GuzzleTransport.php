@@ -108,7 +108,7 @@ final class GuzzleTransport implements HttpTransport
         } catch (ConnectException $error) {
             if ($this->isTimeoutException($error)) {
                 throw new RequestTimeoutException(
-                    'HTTP request timed out after ' . (int) ($request->connect_timeout * 1000) . 'ms while opening the connection',
+                    'HTTP request timed out',
                     $this->redactError($error)
                 );
             }
@@ -117,7 +117,7 @@ final class GuzzleTransport implements HttpTransport
         } catch (RequestException $error) {
             if ($this->isTimeoutException($error)) {
                 throw new RequestTimeoutException(
-                    'HTTP request timed out while waiting for response body data',
+                    'HTTP request timed out',
                     $this->redactError($error)
                 );
             }

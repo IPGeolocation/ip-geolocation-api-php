@@ -140,11 +140,13 @@ final class GuzzleTransportTest extends TestCase
         self::assertSame(['1'], $response->headers['X-Credits-Charged']);
     }
 
-    public function testMapsTimeoutsToRequestTimeoutException(): void
+    #[DataProvider('transportErrors')]
+    public function testMapsTimeoutsToRequestTimeoutException(string $kind): void
     {
+        $exception = $kind === 'connect' ? ConnectException::class : RequestException::class;
         $transport = new GuzzleTransport(new Client([
             'handler' => HandlerStack::create(new MockHandler([
-                new ConnectException(
+                new $exception(
                     'cURL error 28: Operation timed out',
                     new Request('GET', 'https://api.ipgeolocation.io/v3/ipgeo')
                 ),
@@ -152,6 +154,7 @@ final class GuzzleTransportTest extends TestCase
         ]));
 
         $this->expectException(RequestTimeoutException::class);
+        $this->expectExceptionMessageMatches('/^HTTP request timed out$/');
 
         $transport->sendRequest(new HttpRequestData(
             url: 'https://api.ipgeolocation.io/v3/ipgeo',
