@@ -1,4 +1,4 @@
-# IPGeolocation PHP SDK
+# IPGeolocation.io PHP SDK
 
 Official PHP SDK for the IPGeolocation.io IP Geolocation API.
 
@@ -91,7 +91,7 @@ You can pass plain arrays to request methods. If you want validation before the 
 
 ## Get Your API Key
 
-Create an IPGeolocation account and copy an API key from your dashboard.
+Create an IPGeolocation.io account and copy an API key from your dashboard.
 
 1. Sign up: <https://app.ipgeolocation.io/signup>
 2. Verify your email if prompted
