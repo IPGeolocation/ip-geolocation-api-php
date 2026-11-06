@@ -43,6 +43,8 @@ final class GuzzleTransport implements HttpTransport
         $transferStarted = null;
         $deadline = null;
         $timedOut = false;
+        $readingBody = false;
+        $downloadedBytes = 0;
         $externalSink = null;
         $bodyError = null;
         $started = microtime(true);
@@ -145,14 +147,21 @@ final class GuzzleTransport implements HttpTransport
             $onHeaders = $this->client->getConfig('on_headers');
             $onStats = $this->client->getConfig('on_stats');
             $progress = $this->client->getConfig('progress');
-            $curl = [CURLOPT_XFERINFOFUNCTION => static function ($current, $total, $downloaded, $uploadTotal, $uploaded) use (&$handle, &$transferStarted, &$deadline, $headerTimeout, $expired, $progress): int {
+            $progressOption = defined('CURLOPT_XFERINFOFUNCTION') ? CURLOPT_XFERINFOFUNCTION : CURLOPT_PROGRESSFUNCTION;
+            $curl = [$progressOption => static function ($current, $total, $downloaded, $uploadTotal, $uploaded) use (&$handle, &$transferStarted, &$deadline, &$readingBody, &$downloadedBytes, $headerTimeout, $expired, $refreshDeadline, $progress): int {
                 if ($handle === null) {
                     $transferStarted = hrtime(true) / 1e9;
                     $deadline = $transferStarted + $headerTimeout;
+                    $readingBody = false;
+                    $downloadedBytes = 0;
                 }
                 $handle = $current;
                 if ($expired()) {
                     return 1;
+                }
+                if ($readingBody && $downloaded > $downloadedBytes) {
+                    $downloadedBytes = $downloaded;
+                    $refreshDeadline();
                 }
                 if (is_callable($progress)) {
                     $progress($total, $downloaded, $uploadTotal, $uploaded);
@@ -162,8 +171,6 @@ final class GuzzleTransport implements HttpTransport
             if ($decode !== false) {
                 $curl[CURLOPT_ENCODING] = is_string($decode) ? $decode : '';
             }
-            $curl[CURLOPT_LOW_SPEED_LIMIT] = 1;
-            $curl[CURLOPT_LOW_SPEED_TIME] = (int) ceil($readTimeout);
             $options = [
                 'http_errors' => false,
                 'stream' => true,
@@ -174,7 +181,7 @@ final class GuzzleTransport implements HttpTransport
                 'progress' => static function (): void {},
                 'read_timeout' => ceil($readTimeout),
                 'allow_redirects' => $redirects,
-                'on_headers' => static function ($reply) use (&$response, &$headerResponse, &$usedSink, &$externalSink, &$curlDecoded, &$handle, $decode, $bufferResource, $destination, $resetBody, $onHeaders, $expired, $refreshDeadline, $totalTimeout): void {
+                'on_headers' => static function ($reply) use (&$response, &$headerResponse, &$usedSink, &$externalSink, &$curlDecoded, &$handle, &$readingBody, $decode, $bufferResource, $destination, $resetBody, $onHeaders, $expired, $refreshDeadline, $totalTimeout): void {
                     if (!$reply instanceof ResponseInterface || $reply->getStatusCode() < 200) {
                         return;
                     }
@@ -185,6 +192,7 @@ final class GuzzleTransport implements HttpTransport
                     if ($handle !== null) {
                         curl_setopt($handle, CURLOPT_TIMEOUT_MS, $totalTimeout > 0 ? (int) ceil(self::timeout($totalTimeout) * 1000) : 0);
                     }
+                    $readingBody = true;
                     $curlDecoded = $handle !== null && $decode !== false && $reply->hasHeader('Content-Encoding');
                     $usedSink = false;
                     $resetBody($reply);

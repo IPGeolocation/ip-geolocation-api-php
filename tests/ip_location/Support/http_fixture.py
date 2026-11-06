@@ -62,7 +62,7 @@ class Handler(BaseHTTPRequestHandler):
             self.close_connection = True
             return
         encoding = None
-        if route in ('gzip', 'bad-gzip', 'gzip-cut', 'error-gzip-cut', 'gzip-big'):
+        if route in ('gzip', 'bad-gzip', 'gzip-cut', 'error-gzip-cut', 'gzip-big', 'gzip-progress'):
             encoding = 'gzip'
             if route == 'gzip-big':
                 body = b'x' * (2 * 1024 * 1024)
@@ -91,6 +91,8 @@ class Handler(BaseHTTPRequestHandler):
             return
         if route == 'error-large':
             body = b'x' * 4096
+        if route == 'trickle':
+            body = b'{}\n'
         self.send_response(status)
         self.send_header('Content-Length', str(len(body) + (20 if route in ('cut', 'error-cut') else 5 if route in ('gzip-cut', 'error-gzip-cut') else 0)))
         if encoding:
@@ -99,7 +101,24 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.flush()
         if route in ('body-delay', 'error-delay'):
             time.sleep(0.35)
-        if route == 'progress':
+        if route == 'body-stall':
+            self.wfile.write(body[:2])
+            self.wfile.flush()
+            time.sleep(0.35)
+            self.wfile.write(body[2:])
+            return
+        if route == 'trickle':
+            for i in range(len(body)):
+                if i:
+                    time.sleep(1.5)
+                self.wfile.write(body[i:i + 1])
+                self.wfile.flush()
+        elif route == 'gzip-progress':
+            for i in range(0, len(body), 2):
+                self.wfile.write(body[i:i + 2])
+                self.wfile.flush()
+                time.sleep(0.02)
+        elif route == 'progress':
             for i in range(0, len(body), 4):
                 self.wfile.write(body[i:i + 4])
                 self.wfile.flush()

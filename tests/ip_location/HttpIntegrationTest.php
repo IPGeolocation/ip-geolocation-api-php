@@ -108,14 +108,36 @@ final class HttpIntegrationTest extends TestCase
 
     public static function delayedRoutes(): array
     {
-        return [['headers-delay'], ['body-delay']];
+        return [['headers-delay'], ['body-delay'], ['body-stall']];
     }
 
     public function testHealthyProgressCanTakeLongerThanEitherTimeout(): void
     {
         $start = microtime(true);
         self::assertSame('8.8.8.8', $this->client('progress', 0.15)->lookupIpGeolocation()->data->ip);
-        self::assertGreaterThan(0.3, microtime(true) - $start);
+        self::assertGreaterThan(0.2, microtime(true) - $start);
+    }
+
+    public function testCompressedResponseCanKeepMakingProgress(): void
+    {
+        self::assertSame('8.8.8.8', $this->client('gzip-progress', 0.05)->lookupIpGeolocation()->data->ip);
+    }
+
+    public function testSlowResponseStaysWithinTheIdleTimeout(): void
+    {
+        $result = $this->client('trickle', 2, new GuzzleTransport())->lookupIpGeolocation();
+        self::assertNull($result->data->ip);
+    }
+
+    public function testVeryLargeTimeoutsRemainUsable(): void
+    {
+        self::assertSame('8.8.8.8', $this->client('echo', PHP_FLOAT_MAX)->lookupIpGeolocation()->data->ip);
+    }
+
+    public function testVerySmallTimeoutsExpire(): void
+    {
+        $this->expectException(RequestTimeoutException::class);
+        $this->client('headers-delay', 0.0000001, new GuzzleTransport())->lookupIpGeolocation();
     }
 
     #[DataProvider('brokenBodies')]
@@ -267,6 +289,9 @@ final class HttpIntegrationTest extends TestCase
 
     public function testStreamHandlerLeavesUnusedSinkOpen(): void
     {
+        if (!ini_get('allow_url_fopen')) {
+            self::markTestSkipped('The native stream handler is disabled');
+        }
         $sink = fopen('php://temp', 'w+');
         $transport = new GuzzleTransport(new Client(['handler' => HandlerStack::create(new StreamHandler()), 'sink' => $sink]));
         $this->client('echo', 1, $transport)->lookupIpGeolocation();

@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Ipgeolocation\Sdk\GuzzleTransport;
@@ -19,33 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class GuzzleTransportTest extends TestCase
 {
-    public function testPassesBodyProgressTimeoutToCurlOptions(): void
-    {
-        $history = [];
-        $stack = HandlerStack::create(new MockHandler([
-            new Response(200, [], '{"ip":"8.8.8.8"}'),
-        ]));
-        $stack->push(Middleware::history($history));
-
-        $transport = new GuzzleTransport(new Client([
-            'handler' => $stack,
-        ]));
-
-        $transport->sendRequest(new HttpRequestData(
-            url: 'https://api.ipgeolocation.io/v3/ipgeo?apiKey=test-key',
-            method: 'GET',
-            headers: ['Accept' => ['application/json']],
-            body: null,
-            connect_timeout: 10.0,
-            read_timeout: 2.5
-        ));
-
-        self::assertCount(1, $history);
-        self::assertSame(10.0, $history[0]['options']['connect_timeout']);
-        self::assertSame(1, $history[0]['options']['curl'][\CURLOPT_LOW_SPEED_LIMIT]);
-        self::assertSame(3, $history[0]['options']['curl'][\CURLOPT_LOW_SPEED_TIME]);
-    }
-
     public function testReturnsResponseData(): void
     {
         $transport = new GuzzleTransport(new Client([
