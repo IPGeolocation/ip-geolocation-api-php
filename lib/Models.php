@@ -179,7 +179,9 @@ class Network extends ValueObject
     public function __construct(
         public readonly ?string $connection_type = null,
         public readonly ?string $route = null,
-        public readonly ?bool $is_anycast = null
+        public readonly ?bool $is_anycast = null,
+        public readonly ?bool $is_cdn = null,
+        public readonly ?string $cdn_provider_name = null
     ) {
     }
 }
@@ -209,7 +211,18 @@ class Security extends ValueObject
         public readonly ?bool $is_bot = null,
         public readonly ?bool $is_spam = null,
         public readonly ?bool $is_cloud_provider = null,
-        public readonly ?string $cloud_provider_name = null
+        public readonly ?string $cloud_provider_name = null,
+        public readonly ?float $proxy_days_seen_30d = null,
+        public readonly ?float $proxy_days_seen_7d = null,
+        public readonly ?float $proxy_provider_count_30d = null,
+        public readonly ?float $bot_confidence_score = null,
+        public readonly ?string $bot_operator_name = null,
+        public readonly ?string $bot_type = null,
+        public readonly ?bool $is_known_good_bot = null,
+        public readonly ?string $bot_last_seen = null,
+        public readonly ?bool $is_corporate_gateway = null,
+        public readonly ?string $corporate_gateway_type = null,
+        public readonly ?string $corporate_gateway_provider_name = null
     ) {
     }
 }

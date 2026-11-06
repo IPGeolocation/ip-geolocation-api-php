@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     steps:
       - name: Checkout
@@ -33,5 +33,15 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
 
-      - name: Run unit tests
-        run: ./vendor/bin/phpunit --exclude-group live
+      - name: Check dependencies
+        run: composer audit
+
+      - name: Run unit and HTTP tests
+        run: ./vendor/bin/phpunit --exclude-group live --fail-on-warning
+
+      - name: Check Guzzle handlers
+        run: |
+          for handler in curl stream injected; do
+            TEST_HTTP_HANDLER="$handler" ./vendor/bin/phpunit --filter HttpIntegrationTest --fail-on-warning
+          done
+          php -d allow_url_fopen=0 ./vendor/bin/phpunit --filter HttpIntegrationTest --fail-on-warning

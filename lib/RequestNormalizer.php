@@ -47,8 +47,8 @@ final class RequestNormalizer
                 throw new ValidationException('header names must not be blank');
             }
 
-            if (str_contains($name, "\r") || str_contains($name, "\n")) {
-                throw new ValidationException('header names must not contain CR or LF');
+            if (preg_match('/^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$/D', $rawName) !== 1) {
+                throw new ValidationException('header name is not valid');
             }
 
             $values = is_array($rawValue) ? $rawValue : [$rawValue];
@@ -67,8 +67,8 @@ final class RequestNormalizer
                     throw new ValidationException('header values must not contain blank strings');
                 }
 
-                if (str_contains($text, "\r") || str_contains($text, "\n")) {
-                    throw new ValidationException('header values must not contain CR or LF');
+                if (preg_match('/[\\x00-\\x08\\x0a-\\x1f\\x7f]/', $value) === 1) {
+                    throw new ValidationException('header value contains a control character');
                 }
 
                 $normalizedValues[] = $text;
@@ -91,6 +91,10 @@ final class RequestNormalizer
             throw new ValidationException($field . ' must not be blank');
         }
 
+        if ($field === 'user_agent' && preg_match('/[\\x00-\\x08\\x0a-\\x1f\\x7f]/', $value) === 1) {
+            throw new ValidationException('user_agent contains a control character');
+        }
+
         return $normalized;
     }
 
@@ -105,7 +109,7 @@ final class RequestNormalizer
             throw new ValidationException('lang must not be blank');
         }
 
-        $allowed = ['en', 'de', 'ru', 'ja', 'fr', 'cn', 'es', 'cs', 'it', 'ko', 'fa', 'pt'];
+        $allowed = ['en', 'de', 'ru', 'ja', 'fr', 'cn', 'es', 'cs', 'it', 'ko', 'fa', 'pt', 'ar'];
         if (!in_array($normalized, $allowed, true)) {
             throw new ValidationException('lang is not supported');
         }

@@ -68,6 +68,17 @@ final class GuzzleTransportTest extends TestCase
         self::assertSame(['1'], $response->headers['X-Credits-Charged']);
     }
 
+    public function testCompressedResponseWithoutHeaderCallbackIsDecoded(): void
+    {
+        $body = '{"ip":"8.8.8.8"}';
+        $compressed = gzencode($body);
+        $transport = new GuzzleTransport(new Client(['handler' => HandlerStack::create(new MockHandler([
+            static fn () => new Response(200, ['Content-Encoding' => 'gzip', 'Content-Length' => strlen($compressed)], $compressed),
+        ]))]));
+        $result = $transport->sendRequest(new HttpRequestData('https://example.test', 'GET', [], null, 1, 1));
+        self::assertSame($body, $result->body);
+    }
+
     public function testMapsTimeoutsToRequestTimeoutException(): void
     {
         $transport = new GuzzleTransport(new Client([
