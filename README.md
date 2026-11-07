@@ -84,7 +84,7 @@ You can pass plain arrays to request methods. If you want validation before the 
 | Supported Endpoints | `/v3/ipgeo`, `/v3/ipgeo-bulk` |
 | Supported Inputs | IPv4, IPv6, domain |
 | Main Data Returned | Geolocation, company, ASN, time zone, network, hostname, abuse, user-agent, currency, security |
-| Authentication | API key, request-origin auth for `/v3/ipgeo` only |
+| Authentication | API key |
 | Response Formats | Structured JSON, raw JSON, raw XML |
 | Bulk Limit | Up to 50,000 IPs or domains per request |
 | Transport | Guzzle |
@@ -99,7 +99,7 @@ Create an IPGeolocation.io account and copy an API key from your dashboard.
 4. Open your dashboard: <https://app.ipgeolocation.io/dashboard>
 5. Copy an API key from the `API Keys` section
 
-For server-side code, keep the API key in an environment variable or secret manager. For browser-based single lookups on paid plans, use request-origin auth instead of exposing an API key in frontend code.
+Keep your IPGeolocation.io API key in an environment variable or secret manager.
 
 ## Authentication
 
@@ -111,21 +111,7 @@ $client = new IpGeolocationClient([
 ]);
 ```
 
-### Request-Origin Auth
-
-```php
-$client = new IpGeolocationClient([
-    'request_origin' => 'https://app.example.com',
-]);
-```
-
-`request_origin` must be an absolute `http` or `https` origin with no path, query string, fragment, or userinfo.
-
-> [!IMPORTANT]
-> Request-origin auth does not work with `/v3/ipgeo-bulk`. Bulk lookup always requires `api_key`.
-
-> [!NOTE]
-> If you set both `api_key` and `request_origin`, both are sent. The API key appears in the query string, so avoid logging full request URLs.
+The API key is sent as the `apiKey` query parameter, so avoid logging full request URLs.
 
 ## Plan Behavior
 
@@ -137,7 +123,6 @@ Feature availability depends on your plan and request parameters.
 | Domain lookup | Not supported | Supported |
 | Bulk lookup | Not supported | Supported |
 | Non-English `lang` | Not supported | Supported |
-| Request-origin auth | Not supported | Supported for `/v3/ipgeo` only |
 | Optional modules via `include` | Not supported | Supported |
 | `include: ["*"]` | Base response only | All plan-available modules |
 
@@ -147,13 +132,12 @@ Paid plans still need `include` for optional modules. `fields` and `excludes` on
 
 | Field | Type | Default | Notes |
 |-------|------|---------|-------|
-| `api_key` | `string` | unset | Required for bulk lookup. Optional for single lookup if `request_origin` is set. |
-| `request_origin` | `string` | unset | Must be an absolute `http` or `https` origin. |
-| `base_url` | `string` | `https://api.ipgeolocation.io` | Override the API base URL. |
-| `connect_timeout` | `float` | `10.0` | Time to open the connection, in seconds. |
-| `read_timeout` | `float` | `30.0` | Time to wait for response data before timing out, in seconds. |
+| `api_key` | `string` | unset | Your IPGeolocation.io API key. |
+| `base_url` | `string` | `https://api.ipgeolocation.io` | Use the final address of your API or proxy. Redirects are followed only when the protocol, host and port stay the same. |
+| `connect_timeout` | `float` | `10.0` | Time to connect and receive response headers, in seconds. Must be greater than zero. |
+| `read_timeout` | `float` | `30.0` | Time to wait for the next part of the response, in seconds. Must be greater than zero. |
 
-The client constructor accepts either an `IpGeolocationClientConfig` or an array with the same keys.
+The client constructor accepts either an `IpGeolocationClientConfig` or an array with the same keys. If you supply a custom HTTP client or transport, its own settings can also affect timeouts.
 
 ## Available Methods
 
@@ -174,7 +158,7 @@ The client constructor accepts either an `IpGeolocationClientConfig` or an array
 |-------|------------|-------|
 | `ip` | Single lookup | IPv4, IPv6, or domain. Omit it for caller IP lookup. |
 | `ips` | Bulk lookup | Array of 1 to 50,000 IPs or domains. |
-| `lang` | Single and bulk | One of `en`, `de`, `ru`, `ja`, `fr`, `cn`, `es`, `cs`, `it`, `ko`, `fa`, `pt`. |
+| `lang` | Single and bulk | One of `en`, `de`, `ru`, `ja`, `fr`, `cn`, `es`, `cs`, `it`, `ko`, `fa`, `pt`, `ar` (Arabic). |
 | `include` | Single and bulk | Array of module names such as `security`, `abuse`, `user_agent`, `hostname`, `liveHostname`, `hostnameFallbackLive`, `geo_accuracy`, `dma_code`, or `*`. |
 | `fields` | Single and bulk | Array of field paths to keep, for example `["location.country_name", "security.threat_score"]`. |
 | `excludes` | Single and bulk | Array of field paths to remove from the response. |
@@ -277,7 +261,7 @@ echo $response->data . PHP_EOL;
 
 Bulk lookup is a paid-plan feature and always requires `api_key`.
 
-Each bulk result is either a success or an error.
+Each bulk result is either a success or an error. If the API sends missing, extra or invalid rows, the typed lookup throws `SerializationException`. The raw lookup returns the response as received.
 
 ```php
 $response = $client->bulkLookupIpGeolocation([
@@ -326,6 +310,7 @@ echo ($metadata->firstHeaderValue('Content-Type') ?? '') . PHP_EOL;
 Typed response objects extend `ValueObject`, so you can turn them into arrays or JSON when you need to log, cache, or forward them.
 
 ```php
+$response = $client->lookupIpGeolocation(['ip' => '8.8.8.8']);
 $array = $response->data->toArray();
 $json = json_encode($response->data, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 
@@ -333,7 +318,11 @@ print_r($array);
 echo $json . PHP_EOL;
 ```
 
+When you use `print_r()` or `var_dump()` on a client or its settings, the SDK shows `[REDACTED]` in place of your API key. Settings printed as JSON also hide the key. You can still read the key from `$config->api_key`.
+
 ## Errors
+
+If a request error includes your API key, the SDK hides it. This also applies to error messages in typed bulk results. If the error response is too large or ends early, you still get the HTTP status. Some error details may be left out to keep the key hidden.
 
 The SDK throws these exception classes:
 
@@ -368,16 +357,14 @@ try {
 
 ## Troubleshooting
 
-- `bulk lookup requires api_key in client config`
-  Bulk lookup does not support request-origin auth on its own.
-- `single lookup requires api_key or request_origin in client config`
-  Set at least one authentication option before calling the single lookup methods.
+- Missing API key
+  Set `api_key` before making a lookup.
 - `XML output is not supported by typed methods`
   Use `lookupIpGeolocationRaw` or `bulkLookupIpGeolocationRaw` for XML output.
 - `client is closed`
   Create a new client after calling `close`.
 - `TransportException` or `RequestTimeoutException`
-  Increase `connect_timeout` or `read_timeout`, or add retry logic. `read_timeout` is how long the client waits for response data before timing out.
+  Increase `connect_timeout` or `read_timeout`, or add retry logic. `read_timeout` is how long the client waits for the next part of the response.
 
 ## Frequently Asked Questions
 

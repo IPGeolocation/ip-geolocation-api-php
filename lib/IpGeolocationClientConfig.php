@@ -44,6 +44,11 @@ final class IpGeolocationClientConfig extends ValueObject
         return $data;
     }
 
+    public function __debugInfo(): array
+    {
+        return $this->toArray(true);
+    }
+
     private static function normalizeApiKey(?string $value): ?string
     {
         if ($value === null) {

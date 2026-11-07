@@ -95,11 +95,11 @@ final class SerDe
     public static function parseSingleLookup(string $body): IpGeolocationResponse
     {
         $payload = self::parseJson($body, 'Failed to deserialize API response');
-        if (!is_array($payload) || array_is_list($payload)) {
+        if (!$payload instanceof \stdClass) {
             throw new SerializationException('Failed to deserialize API response');
         }
 
-        return self::parseIpGeolocationResponse($payload);
+        return self::parseIpGeolocationResponse(get_object_vars($payload));
     }
 
     /**
@@ -114,9 +114,10 @@ final class SerDe
 
         $results = [];
         foreach ($payload as $item) {
-            if (!is_array($item)) {
+            if (!$item instanceof \stdClass) {
                 throw new SerializationException('Failed to deserialize API response');
             }
+            $item = get_object_vars($item);
 
             if (self::bulkErrorItem($item)) {
                 $results[] = new BulkLookupError(
@@ -181,7 +182,7 @@ final class SerDe
             $message = $payload['error']['message'] ?? null;
         }
 
-        return self::stringOrNull($message) ?? substr($normalized, 0, 512);
+        return is_string($message) ? $message : substr($normalized, 0, 512);
     }
 
     /**
@@ -243,7 +244,7 @@ final class SerDe
     private static function parseJson(string $body, string $message): mixed
     {
         try {
-            return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            return json_decode($body, false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $error) {
             throw new SerializationException($message, $error);
         }
@@ -394,7 +395,9 @@ final class SerDe
         return new Network(
             connection_type: self::stringOrNull($node['connection_type'] ?? null),
             route: self::stringOrNull($node['route'] ?? null),
-            is_anycast: self::boolOrNull($node['is_anycast'] ?? null)
+            is_anycast: self::boolOrNull($node['is_anycast'] ?? null),
+            is_cdn: self::boolOrNull($node['is_cdn'] ?? null),
+            cdn_provider_name: self::stringOrNull($node['cdn_provider_name'] ?? null)
         );
     }
 
@@ -422,7 +425,18 @@ final class SerDe
             is_bot: self::boolOrNull($node['is_bot'] ?? null),
             is_spam: self::boolOrNull($node['is_spam'] ?? null),
             is_cloud_provider: self::boolOrNull($node['is_cloud_provider'] ?? null),
-            cloud_provider_name: self::stringOrNull($node['cloud_provider_name'] ?? null)
+            cloud_provider_name: self::stringOrNull($node['cloud_provider_name'] ?? null),
+            proxy_days_seen_30d: self::numericOrNull($node['proxy_days_seen_30d'] ?? null),
+            proxy_days_seen_7d: self::numericOrNull($node['proxy_days_seen_7d'] ?? null),
+            proxy_provider_count_30d: self::numericOrNull($node['proxy_provider_count_30d'] ?? null),
+            bot_confidence_score: self::numericOrNull($node['bot_confidence_score'] ?? null),
+            bot_operator_name: self::stringOrNull($node['bot_operator_name'] ?? null),
+            bot_type: self::stringOrNull($node['bot_type'] ?? null),
+            is_known_good_bot: self::boolOrNull($node['is_known_good_bot'] ?? null),
+            bot_last_seen: self::stringOrNull($node['bot_last_seen'] ?? null),
+            is_corporate_gateway: self::boolOrNull($node['is_corporate_gateway'] ?? null),
+            corporate_gateway_type: self::stringOrNull($node['corporate_gateway_type'] ?? null),
+            corporate_gateway_provider_name: self::stringOrNull($node['corporate_gateway_provider_name'] ?? null)
         );
     }
 
@@ -517,15 +531,11 @@ final class SerDe
             return null;
         }
 
-        if (!is_array($value)) {
+        if (!$value instanceof \stdClass) {
             throw new SerializationException('Failed to deserialize API response');
         }
 
-        if ($value !== [] && array_is_list($value)) {
-            throw new SerializationException('Failed to deserialize API response');
-        }
-
-        return $parser($value);
+        return $parser(get_object_vars($value));
     }
 
     private static function stringOrNull(mixed $value): ?string
@@ -605,9 +615,8 @@ final class SerDe
         }
 
         return isset($item['error'])
-            && is_array($item['error'])
-            && !array_is_list($item['error'])
-            && array_key_exists('message', $item['error']);
+            && $item['error'] instanceof \stdClass
+            && property_exists($item['error'], 'message');
     }
 
     /**
@@ -620,10 +629,10 @@ final class SerDe
             return $message;
         }
 
-        if (!isset($item['error']) || !is_array($item['error']) || array_is_list($item['error'])) {
+        if (!isset($item['error']) || !$item['error'] instanceof \stdClass) {
             return null;
         }
 
-        return self::stringOrNull($item['error']['message'] ?? null);
+        return self::stringOrNull($item['error']->message ?? null);
     }
 }

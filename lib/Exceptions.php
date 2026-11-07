@@ -9,6 +9,12 @@ class IpGeolocationException extends \RuntimeException
     public function __construct(string $message, public readonly ?\Throwable $cause = null)
     {
         parent::__construct($message, 0, $cause);
+        // Arguments can contain API keys even when the error message does not.
+        $trace = array_map(static function (array $frame): array {
+            unset($frame['args'], $frame['object']);
+            return $frame;
+        }, $this->getTrace());
+        (new \ReflectionProperty(\Exception::class, 'trace'))->setValue($this, $trace);
     }
 }
 

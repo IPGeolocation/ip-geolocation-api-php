@@ -23,15 +23,20 @@ final class IpGeolocationClient
      */
     public function __construct(IpGeolocationClientConfig|array $config, ?HttpTransport $transport = null)
     {
-        $this->config = $config instanceof IpGeolocationClientConfig
-            ? $config
-            : new IpGeolocationClientConfig(
-                api_key: $config['api_key'] ?? null,
-                request_origin: $config['request_origin'] ?? null,
-                base_url: $config['base_url'] ?? IpGeolocationClientConfig::DEFAULT_BASE_URL,
-                connect_timeout: $config['connect_timeout'] ?? IpGeolocationClientConfig::DEFAULT_CONNECT_TIMEOUT,
-                read_timeout: $config['read_timeout'] ?? IpGeolocationClientConfig::DEFAULT_READ_TIMEOUT
-            );
+        try {
+            $this->config = $config instanceof IpGeolocationClientConfig
+                ? $config
+                : new IpGeolocationClientConfig(
+                    api_key: $config['api_key'] ?? null,
+                    request_origin: $config['request_origin'] ?? null,
+                    base_url: $config['base_url'] ?? IpGeolocationClientConfig::DEFAULT_BASE_URL,
+                    connect_timeout: $config['connect_timeout'] ?? IpGeolocationClientConfig::DEFAULT_CONNECT_TIMEOUT,
+                    read_timeout: $config['read_timeout'] ?? IpGeolocationClientConfig::DEFAULT_READ_TIMEOUT
+                );
+        } catch (\Throwable $error) {
+            $key = is_array($config) && is_string($config['api_key'] ?? null) ? $config['api_key'] : null;
+            throw ErrorRedactor::exception($error, $key);
+        }
 
         $this->transport = $transport ?? new GuzzleTransport();
         $this->owns_transport = $transport === null;
@@ -42,25 +47,29 @@ final class IpGeolocationClient
         return 'ipgeolocation-php-sdk/' . Version::VERSION;
     }
 
+    public function __debugInfo(): array
+    {
+        return ['config' => $this->config->toArray(true), 'closed' => $this->closed];
+    }
+
     /**
      * @return ApiResponse<IpGeolocationResponse>
      */
     public function lookupIpGeolocation(LookupIpGeolocationRequest|array|null $request = null): ApiResponse
     {
-        $this->ensureOpen();
-        $typedRequest = $this->toLookupRequest($request);
-        $this->validateLookupRequestBase();
-        SerDe::validateJsonOutput($typedRequest->output);
+        return $this->withSafeErrors(function () use ($request): ApiResponse {
+            $this->ensureOpen();
+            $typedRequest = $this->toLookupRequest($request);
+            $this->validateLookupRequestBase();
+            SerDe::validateJsonOutput($typedRequest->output);
 
-        [$response, $durationMs] = $this->executeWithMetrics($this->buildLookupHttpRequest($typedRequest));
-        if (!$this->successStatus($response->status_code)) {
-            throw SerDe::toApiException($response->status_code, $response->body);
-        }
+            [$response, $durationMs] = $this->executeWithMetrics($this->buildLookupHttpRequest($typedRequest));
 
-        return new ApiResponse(
-            data: SerDe::parseSingleLookup($response->body),
-            metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
-        );
+            return new ApiResponse(
+                data: SerDe::parseSingleLookup($response->body),
+                metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
+            );
+        });
     }
 
     /**
@@ -68,19 +77,18 @@ final class IpGeolocationClient
      */
     public function lookupIpGeolocationRaw(LookupIpGeolocationRequest|array|null $request = null): ApiResponse
     {
-        $this->ensureOpen();
-        $typedRequest = $this->toLookupRequest($request);
-        $this->validateLookupRequestBase();
+        return $this->withSafeErrors(function () use ($request): ApiResponse {
+            $this->ensureOpen();
+            $typedRequest = $this->toLookupRequest($request);
+            $this->validateLookupRequestBase();
 
-        [$response, $durationMs] = $this->executeWithMetrics($this->buildLookupHttpRequest($typedRequest));
-        if (!$this->successStatus($response->status_code)) {
-            throw SerDe::toApiException($response->status_code, $response->body);
-        }
+            [$response, $durationMs] = $this->executeWithMetrics($this->buildLookupHttpRequest($typedRequest));
 
-        return new ApiResponse(
-            data: $response->body,
-            metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
-        );
+            return new ApiResponse(
+                data: $response->body,
+                metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
+            );
+        });
     }
 
     /**
@@ -88,20 +96,30 @@ final class IpGeolocationClient
      */
     public function bulkLookupIpGeolocation(BulkLookupIpGeolocationRequest|array $request): ApiResponse
     {
-        $this->ensureOpen();
-        $typedRequest = $this->toBulkRequest($request);
-        $this->validateBulkRequestBase();
-        SerDe::validateJsonOutput($typedRequest->output);
+        return $this->withSafeErrors(function () use ($request): ApiResponse {
+            $this->ensureOpen();
+            $typedRequest = $this->toBulkRequest($request);
+            $this->validateBulkRequestBase();
+            SerDe::validateJsonOutput($typedRequest->output);
 
-        [$response, $durationMs] = $this->executeWithMetrics($this->buildBulkHttpRequest($typedRequest));
-        if (!$this->successStatus($response->status_code)) {
-            throw SerDe::toApiException($response->status_code, $response->body);
-        }
+            [$response, $durationMs] = $this->executeWithMetrics($this->buildBulkHttpRequest($typedRequest));
+            $results = SerDe::parseBulkLookup($response->body);
+            if (count($results) !== count($typedRequest->ips)) {
+                throw new SerializationException('Bulk response must contain one result per input');
+            }
+            foreach ($results as $index => $result) {
+                if ($result instanceof BulkLookupError && $result->error->message !== null) {
+                    $results[$index] = new BulkLookupError(new BulkLookupErrorDetails(
+                        ErrorRedactor::text($result->error->message, $this->config->api_key)
+                    ));
+                }
+            }
 
-        return new ApiResponse(
-            data: SerDe::parseBulkLookup($response->body),
-            metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
-        );
+            return new ApiResponse(
+                data: $results,
+                metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
+            );
+        });
     }
 
     /**
@@ -109,19 +127,18 @@ final class IpGeolocationClient
      */
     public function bulkLookupIpGeolocationRaw(BulkLookupIpGeolocationRequest|array $request): ApiResponse
     {
-        $this->ensureOpen();
-        $typedRequest = $this->toBulkRequest($request);
-        $this->validateBulkRequestBase();
+        return $this->withSafeErrors(function () use ($request): ApiResponse {
+            $this->ensureOpen();
+            $typedRequest = $this->toBulkRequest($request);
+            $this->validateBulkRequestBase();
 
-        [$response, $durationMs] = $this->executeWithMetrics($this->buildBulkHttpRequest($typedRequest));
-        if (!$this->successStatus($response->status_code)) {
-            throw SerDe::toApiException($response->status_code, $response->body);
-        }
+            [$response, $durationMs] = $this->executeWithMetrics($this->buildBulkHttpRequest($typedRequest));
 
-        return new ApiResponse(
-            data: $response->body,
-            metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
-        );
+            return new ApiResponse(
+                data: $response->body,
+                metadata: SerDe::toMetadata($response->status_code, $durationMs, $response->headers)
+            );
+        });
     }
 
     public function close(): void
@@ -133,6 +150,15 @@ final class IpGeolocationClient
         $this->closed = true;
         if ($this->owns_transport) {
             $this->transport->close();
+        }
+    }
+
+    private function withSafeErrors(callable $operation): ApiResponse
+    {
+        try {
+            return $operation();
+        } catch (\Throwable $error) {
+            throw ErrorRedactor::exception($error, $this->config->api_key);
         }
     }
 
@@ -282,6 +308,9 @@ final class IpGeolocationClient
     {
         $startedAt = microtime(true);
         $response = $this->transport->sendRequest($request);
+        if (!$this->successStatus($response->status_code)) {
+            throw SerDe::toApiException($response->status_code, ErrorRedactor::text($response->body, $this->config->api_key));
+        }
         $durationMs = (int) floor((microtime(true) - $startedAt) * 1000);
 
         return [$response, max($durationMs, 0)];
