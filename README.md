@@ -126,7 +126,7 @@ Feature availability depends on your plan and request parameters.
 | Optional modules via `include` | Not supported | Supported |
 | `include: ["*"]` | Base response only | All plan-available modules |
 
-Paid plans still need `include` for optional modules. `fields` and `excludes` only trim the response. They do not turn modules on or unlock paid data.
+Paid plans still need the `include` parameter for optional modules. `fields` and `excludes` only trim the response. They do not turn modules on or unlock paid data.
 
 ## Client Configuration
 
