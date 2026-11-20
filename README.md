@@ -357,13 +357,13 @@ try {
 
 ## Troubleshooting
 
-- Missing API key
+- Missing API key:
   Set `api_key` before making a lookup.
-- `XML output is not supported by typed methods`
+- `XML output is not supported by typed methods`:
   Use `lookupIpGeolocationRaw` or `bulkLookupIpGeolocationRaw` for XML output.
-- `client is closed`
+- `client is closed`:
   Create a new client after calling `close`.
-- `TransportException` or `RequestTimeoutException`
+- `TransportException` or `RequestTimeoutException`:
   Increase `connect_timeout` or `read_timeout`, or add retry logic. `read_timeout` is how long the client waits for the next part of the response.
 
 ## Frequently Asked Questions
